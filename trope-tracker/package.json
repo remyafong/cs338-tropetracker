@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "firebase": "^7.2.1",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-scripts": "3.2.0"
@@ -30,5 +31,17 @@
   },
   "devDependencies": {
     "typescript": "^3.6.4"
-  }
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/remyafong/cs338-tropetracker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/remyafong/cs338-tropetracker/issues"
+  },
+  "homepage": "https://github.com/remyafong/cs338-tropetracker#readme"
 }
