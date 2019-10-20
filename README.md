@@ -1,1 +1,0 @@
-# eecs338-tropetracker
