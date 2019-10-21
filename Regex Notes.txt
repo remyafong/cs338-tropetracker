@@ -1,0 +1,5 @@
+' or nothing
+ignore case
+maybe words to numbers
+5 words in between words \w{0,5}
+pronouns
