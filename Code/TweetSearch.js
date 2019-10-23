@@ -27,16 +27,28 @@ const client = new Twitter({
 
 //const ref = firebase.storage().ref();
 
-const params = {
-  q: 'url:cnn url:nbcnews url:huffpost url:cbsnews url:usatoday url:nytimes url:foxnews url:washingtonpost url:businessinsider url:npr',
-  lang: 'en',
-  count: 100
-};
+const newsSiteQuerys = [
+	'url:cnn',
+	'url:nbcnews',
+	'url:huffpost',
+	'url:cbsnews',
+	'url:usatoday',
+	'url:nytimes',
+	'url:foxnews',
+	'url:washingtonpost',
+	'url:businessinsider',
+	'url:npr'
+];
 
-(() => {
-	client.get('search/tweets', params, function(error, tweets, response) {
+const searchTwitter = async (newsSite) => {
+	const params = {
+		q: newsSite,
+		lang: 'en',
+		count: 100
+	}
+	
+	await client.get('search/tweets', params, function(error, tweets, response) {
 		if (!error) {
-			const file = new Map();
 			const name = tweets.search_metadata.max_id;
 			const metadata = {
 				contentType: 'json'
@@ -52,9 +64,7 @@ const params = {
 				 }
 			 }
 		 }
-		 
-		 console.log(JSON.stringify(file));
-		 console.log(tweets.statuses.length);
+		 console.log(newsSite + " has " + tweets.statuses.length + " of 100 tweets");
 
 	/*    const task = ref.child(name).put(JSON.stringify(file), metadata);
 		 task.then(snapshot => snapshot.ref.getDownloadURL())
@@ -66,5 +76,13 @@ const params = {
 			console.log(error);
 		}
 	});
+}
+
+(async () => {
+	for (site of newsSiteQuerys) {
+		await searchTwitter(site);
+	}
+	
+	console.log(JSON.stringify(file));
 	return;
 })()
