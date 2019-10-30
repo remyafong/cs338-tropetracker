@@ -61,7 +61,7 @@ module.exports = [
 },
 {
 	name: "ball is in your court",
-	queries: 'ball court'
+	queries: 'ball your court'
 },
 {
 	name: "Witch hunt",

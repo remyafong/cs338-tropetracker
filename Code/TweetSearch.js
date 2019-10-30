@@ -19,10 +19,10 @@ const MultiMap = require("collections/multi-map");
 firebase.initializeApp(firebaseConfig); */
 
 const client = new Twitter({
-  consumer_key: 'UruGJu3E78afMz3WPQMPUUnDk',
-  consumer_secret: 'tzuOh4TtKIDJv1MbCdAF0v1XEyHAdL7KUhMWqpzCRD3V2azYIy',
-  access_token_key: '2712861973-K86EyvN8NfsYbI7AARM2eMQMRd5C0wLxLlwl9Ak',
-  access_token_secret: 'ZTSzVHBUcVZPKQnXAHX7EL0KJRrDfob2WgddCMZ3p74Jl'
+  consumer_key: 'faUJyytfWWdUGFHD3XCfZqivU',
+  consumer_secret: 'K4G0KIhskWOBiRpbvqdX1gv4xa1gGSfEXHe16SNFtGiOX3v5ov',
+  access_token_key: '1021569060339888128-KD45s6XczRWNQtkHlZjgdbicGyTSkx',
+  access_token_secret: 'kxr9ki5AedHdACqFVVKSX75zKSDAQbLmZbV1WYOBOZ4Jf'
 });
 
 //const ref = firebase.storage().ref();
