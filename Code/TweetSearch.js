@@ -27,6 +27,10 @@ const client = new Twitter({
 
 //const ref = firebase.storage().ref();
 
+const file = new Map();
+let totalQueries = 0;
+let finishedQueries = 0;
+
 const newsSiteQuerys = [
 	'url:cnn',
 	'url:nbcnews',
@@ -40,7 +44,7 @@ const newsSiteQuerys = [
 	'url:npr'
 ];
 
-const searchTwitter = async (newsSite) => {
+const searchTwitterBySite = async (newsSite) => {
 	const params = {
 		q: newsSite,
 		lang: 'en',
@@ -59,12 +63,17 @@ const searchTwitter = async (newsSite) => {
 				 if (tweet.text.match(trope.regex)) {
 					 for (url of tweet.entities.urls) {
 						 file.set(url.expanded_url, trope.name);
+						 file.set(tweet.text, url.expanded_url);
 					 }
 					 break;
 				 }
 			 }
 		 }
 		 console.log(newsSite + " has " + tweets.statuses.length + " of 100 tweets");
+		 finishedURLs++;
+		 if (finishedURLs == newsSiteQuerys.length) {
+			 console.log(JSON.stringify(file));
+		 }
 
 	/*    const task = ref.child(name).put(JSON.stringify(file), metadata);
 		 task.then(snapshot => snapshot.ref.getDownloadURL())
@@ -78,11 +87,59 @@ const searchTwitter = async (newsSite) => {
 	});
 }
 
-(async () => {
-	for (site of newsSiteQuerys) {
-		await searchTwitter(site);
+const searchTwitterSiteTerm = async (term, site = 'filter:links') => {
+	const params = {
+		q: site + ' ' + term.queries,
+		lang: 'en',
+		count: 100
 	}
 	
-	console.log(JSON.stringify(file));
+	await client.get('search/tweets', params, function(error, tweets, response) {
+		if (!error) {
+			const name = tweets.search_metadata.max_id;
+			const metadata = {
+				contentType: 'json'
+			};
+
+		 for (tweet of tweets.statuses) {
+			 for (url of tweet.entities.urls){
+				 file.set(url.expanded_url, term.name);
+				 file.set(tweet.text, url.expanded_url);
+			 }
+		 }
+		 console.log(term.name + ' + ' + site + " has " + tweets.statuses.length + " of 100 tweets");
+		}
+		else {
+			console.log(error);
+		}
+		
+	 finishedQueries++;
+	 
+	 if (finishedQueries == totalQueries) {
+		 console.log(JSON.stringify(file));
+	 }
+	});
+}
+
+(() => {
+/* 	finishedQueries = 0;
+	totalQueries = newsSiteQuerys.length;
+	for (site of newsSiteQuerys) {
+		searchTwitterSite(site);
+	} */
+	
+/* 	finishedQueries = 0;
+	totalQueries = Tropes.length;
+	for (q of Tropes) {
+		searchTwitterSiteTerm(q);
+	} */
+	
+ 	finishedQueries = 0;
+	totalQueries = Tropes.length * newsSiteQuerys.length;
+	for (q of Tropes) {
+		for (site of newsSiteQuerys) {
+			searchTwitterSiteTerm(q, site);
+		}
+	}
 	return;
 })()
