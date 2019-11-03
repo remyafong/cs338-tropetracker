@@ -1,71 +1,7 @@
 module.exports = [
 {
-	name: "David vs. Goliath",
-	queries: 'david goliath'
-},
-{
-	name: "All that glitters is not gold",
-	queries: 'glitters gold'
-},
-{
-	name: "Another nail in the coffin",
-	queries: 'nail coffin'
-},
-{
-	name: "Asleep at the wheel",
-	queries: 'asleep wheel'
-},
-{
-	name: "Catch 22",
-	queries: 'catch 22 twenty-two'
-},
-{
-	name: "A bird in the hand is worth two in the bush",
-	queries: 'bird hand bush'
-},
-{
-	name: "The prodigal son returns",
-	queries: 'prodigal son'
-},
-{
-	name: "watched pot never boils",
-	queries: 'watched pot boils'
-},
-{
-	name: "Pot calling the kettle black",
-	queries: 'pot kettle black'
-},
-{
-	name: "A needle in a haystack",
-	queries: 'needle haystack'
-},
-{
-	name: "All roads lead to rome",
-	queries: 'roads rome'
-},
-{
-	name: "By the skin of your teeth",
-	queries: 'skin teeth'
-},
-{
-	name: "You scratch my back, I'll scratch yours",
-	queries: 'scratch back my yours'
-},
-{
-	name: "You made your bed now you have to lie in it",
-	queries: 'made bed lie'
-},
-{
-	name: "Bait and Switch",
-	queries: 'bait switch'
-},
-{
-	name: "ball is in your court",
-	queries: 'ball your court'
-},
-{
 	name: "Witch hunt",
-	queries: 'witch hunt'
+	queries: 'witch hunt -trump'
 },
 {
 	name: "Wild goose chase",
@@ -162,6 +98,70 @@ module.exports = [
 {
 	name: "see the forest for the trees",
 	queries: 'see forest tree'
+},
+{
+	name: "David vs. Goliath",
+	queries: 'david goliath'
+},
+{
+	name: "All that glitters is not gold",
+	queries: 'glitters gold'
+},
+{
+	name: "Another nail in the coffin",
+	queries: 'nail coffin'
+},
+{
+	name: "Asleep at the wheel",
+	queries: 'asleep wheel'
+},
+{
+	name: "Catch 22",
+	queries: 'catch 22 twenty-two'
+},
+{
+	name: "A bird in the hand is worth two in the bush",
+	queries: 'bird hand bush'
+},
+{
+	name: "The prodigal son returns",
+	queries: 'prodigal son'
+},
+{
+	name: "watched pot never boils",
+	queries: 'watched pot boils'
+},
+{
+	name: "Pot calling the kettle black",
+	queries: 'pot kettle black'
+},
+{
+	name: "A needle in a haystack",
+	queries: 'needle haystack'
+},
+{
+	name: "All roads lead to rome",
+	queries: 'roads rome'
+},
+{
+	name: "By the skin of your teeth",
+	queries: 'skin teeth'
+},
+{
+	name: "You scratch my back, I'll scratch yours",
+	queries: 'scratch back my yours'
+},
+{
+	name: "You made your bed now you have to lie in it",
+	queries: 'made bed lie'
+},
+{
+	name: "Bait and Switch",
+	queries: 'bait switch'
+},
+{
+	name: "ball is in your court",
+	queries: 'ball your court'
 },
 {
 	name: "hit the nail on the head",
