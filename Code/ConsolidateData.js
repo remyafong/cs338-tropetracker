@@ -16,9 +16,15 @@ const sortedObject = (obj) => {
 
 (() => {
 	const DataFolder = "../Data/";
+	const allDataFile = "../ConsolidatedData.json";
 
 	var allResults = {};
 	const files = fs.readdirSync(DataFolder);
+	
+	if (fs.existsSync(allDataFile)) {
+		console.log("Loading previous data...")
+		allResults = JSON.parse(fs.readFileSync(allDataFile));
+	} 
 
 	files.forEach((file) => {
 		const fileData = JSON.parse(fs.readFileSync(DataFolder + file));
@@ -26,7 +32,7 @@ const sortedObject = (obj) => {
 	});
 
 	console.log("There are " + Object.keys(allResults).length + " data points");
-	fs.writeFileSync("../ConsolidatedData.json", JSON.stringify(allResults).replace(/\}\,/g, '},\n'));
+	fs.writeFileSync(allDataFile, JSON.stringify(allResults).replace(/\}\,/g, '},\n'));
 
 	const tropeCount = {};
 	for (tweet in allResults) {
