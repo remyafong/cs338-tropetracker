@@ -57,56 +57,13 @@ const newsSiteQuerys = [
 	'url:npr'
 ];
 
-const searchTwitterBySite = async (newsSite) => {
-	const params = {
-		q: newsSite,
-		lang: 'en',
-		count: 100
-	}
-	
-	await client.get('search/tweets', params, function(error, tweets, response) {
-		if (!error) {
-			const name = tweets.search_metadata.max_id;
-			const metadata = {
-				contentType: 'json'
-			};
-
-		 for (tweet of tweets.statuses) {
-			 for (trope of Tropes) {
-				 if (tweet.text.match(trope.regex)) {
-					 for (url of tweet.entities.urls) {
-						 file.set(url.expanded_url, trope.name);
-						 file.set(tweet.text, url.expanded_url);
-					 }
-					 break;
-				 }
-			 }
-		 }
-		 console.log(newsSite + " has " + tweets.statuses.length + " of 100 tweets");
-		 finishedURLs++;
-		 if (finishedURLs == newsSiteQuerys.length) {
-			 console.log(JSON.stringify(file));
-		 }
-
-	/*    const task = ref.child(name).put(JSON.stringify(file), metadata);
-		 task.then(snapshot => snapshot.ref.getDownloadURL())
-			 .then((url) => {
-				 console.log(url);
-			 }).catch(console.error); */
-		}
-		else {
-			console.log(error);
-		}
-	});
-}
-
 const searchTwitterSiteTerm = (client, term, site = 'filter:links') => {
 	const params = {
 		q: site + ' ' + term.queries,
 		lang: 'en',
 		count: 100
 	}
-	
+
 	client.get('search/tweets', params, function(error, tweets, response) {
 		if (!error) {
 			const name = tweets.search_metadata.max_id;
@@ -116,7 +73,7 @@ const searchTwitterSiteTerm = (client, term, site = 'filter:links') => {
 
 		 for (tweet of tweets.statuses) {
 			 for (url of tweet.entities.urls){
-				 file[tweet.id] = {trope: term.name, link: url.expanded_url};
+				 file[tweet.id] = {trope: term.name, link: url.expanded_url, text: tweet.text};
 			 }
 		 }
 		 console.log(term.name + ' + ' + site + " has " + tweets.statuses.length + " of 100 tweets");
@@ -124,19 +81,20 @@ const searchTwitterSiteTerm = (client, term, site = 'filter:links') => {
 		else {
 			console.log(error);
 		}
-		
+
 	 finishedQueries++;
-	 
+
 	 if (finishedQueries == totalQueries) {
 		 let result = JSON.stringify(file).replace(/\}\,/g, '},\n');
 		 fs.writeFileSync("../Data/file_" + Date.now() + ".json", result);
 		 console.log("Saved " + Object.keys(file).length + " results");
 		 consolidate.main();
+     return;
 	 }
 	});
 }
 
-(() => {	
+(() => {
  	finishedQueries = 0;
 	totalQueries = Tropes.length * newsSiteQuerys.length;
 	shuffle(newsSiteQuerys);

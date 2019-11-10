@@ -17,10 +17,13 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const ref = firebase.database().ref();
+const idRef = ref.child('tweet_id');
+const tropeRef = ref.child('trope');
+const linkRef = ref.child('link');
 
 const sortedObject = (obj) => {
 	const arr = [];
-	
+
 	Object.keys(obj).forEach((key) => arr.push([key, obj[key]]));
 
 	arr.sort((a,b) => (a[1] < b[1]) ? 1 : -1);
@@ -32,21 +35,61 @@ const sortedObject = (obj) => {
 	return obj;
 }
 
-const firebaseUpload = (data) => {
-	const idRef = ref.child('tweet_id');
-	idRef.set(data);
+const id2trope = (data) => {
+	const tropeTable = {};
+
+	Object.keys(data).forEach((id) => {
+    const l = data[id].link.replace(/[\#\.\/ ]/g, '_');
+    const t = data[id].trope.replace(/[\#\.\/ ]/g, '_');
+
+		if (tropeTable[t] && tropeTable[t][l]) {
+      tropeTable[t][l].count++;
+      tropeTable[t][l].id.push(id);
+    }
+    else {
+      tropeTable[t] = tropeTable[t] ? tropeTable[t] : {};
+      tropeTable[t][l] = {count: 1, id: [id]};
+    }
+	});
+
+  return tropeTable;
 }
 
-const main = () => {
+const id2link = (data) => {
+	const tropeTable = {};
+
+	Object.keys(data).forEach((id) => {
+    const l = data[id].link.replace(/[\#\.\/ ]/g, '_');
+    const t = data[id].trope.replace(/[\#\.\/ ]/g, '_');
+
+		if (tropeTable[l] && tropeTable[l][t]) {
+      tropeTable[l][t].count++;
+      tropeTable[l][t].id.push(id);
+    }
+    else {
+      tropeTable[l] = tropeTable[l] ? tropeTable[l] : {};
+      tropeTable[l][t] = {count: 1, id: [id]};
+    }
+	});
+
+  return tropeTable;
+}
+
+const firebaseUpload = (data) => {
+	idRef.set(data);
+	tropeRef.set(id2trope(data));
+	linkRef.set(id2link(data));
+}
+
+const main = async () => {
 	const DataFolder = "../Data/";
 	const allDataFile = "../ConsolidatedData.json";
 	const files = fs.readdirSync(DataFolder);
-	
-	var allResults = {};
-	if (fs.existsSync(allDataFile)) {
-		console.log("Loading previous data...")
-		allResults = JSON.parse(fs.readFileSync(allDataFile));
-	} 
+
+	let allResults = {};
+  await idRef.once('value').then(function(snapshot) {
+    allResults = snapshot.val();
+  });
 
 	files.forEach((file) => {
 		const fileData = JSON.parse(fs.readFileSync(DataFolder + file));
@@ -62,7 +105,7 @@ const main = () => {
 	}
 
 	console.log(sortedObject(tropeCount));
-	
+
 	firebaseUpload(allResults);
 	return;
 }
