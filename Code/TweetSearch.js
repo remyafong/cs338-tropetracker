@@ -2,22 +2,7 @@ const Twitter = require('twitter');
 const Tropes = require('./TropeList');
 const MultiMap = require("collections/multi-map");
 const fs = require('fs');
-//import firebase from 'firebase/app';
-//import 'firebase/database';
-
-
-/* const firebaseConfig = {
-  apiKey: "AIzaSyDJsNN9qdUAdwkQmL-8D91-m4frOKjzSHs",
-  authDomain: "trope-tracker-62549.firebaseapp.com",
-  databaseURL: "https://trope-tracker-62549.firebaseio.com",
-  projectId: "trope-tracker-62549",
-  storageBucket: "trope-tracker-62549.appspot.com",
-  messagingSenderId: "790085425651",
-  appId: "1:790085425651:web:8033e73a0115794231da86",
-  measurementId: "G-BCFM30M7FE"
-};
-
-firebase.initializeApp(firebaseConfig); */
+const consolidate = require('./ConsolidateData')
 
 const client1 = new Twitter({
   consumer_key: 'UruGJu3E78afMz3WPQMPUUnDk',
@@ -45,8 +30,6 @@ const TropeThirds = Math.ceil(Tropes.length / 3);
 const clients = [{c: client1, t: Tropes.slice(0, TropeThirds)},
 		{c: client2, t: Tropes.slice(TropeThirds, TropeThirds*2)},
 		{c: client3, t: Tropes.slice(TropeThirds*2, TropeThirds*3)}];
-
-//const ref = firebase.storage().ref();
 
 const file = {};
 let totalQueries = 0;
@@ -117,14 +100,14 @@ const searchTwitterBySite = async (newsSite) => {
 	});
 }
 
-const searchTwitterSiteTerm = async (client, term, site = 'filter:links') => {
+const searchTwitterSiteTerm = (client, term, site = 'filter:links') => {
 	const params = {
 		q: site + ' ' + term.queries,
 		lang: 'en',
 		count: 100
 	}
 	
-	await client.get('search/tweets', params, function(error, tweets, response) {
+	client.get('search/tweets', params, function(error, tweets, response) {
 		if (!error) {
 			const name = tweets.search_metadata.max_id;
 			const metadata = {
@@ -133,7 +116,7 @@ const searchTwitterSiteTerm = async (client, term, site = 'filter:links') => {
 
 		 for (tweet of tweets.statuses) {
 			 for (url of tweet.entities.urls){
-				 file[tweet.id] = {trope: term.name, link: url.expanded_url, tweet_id: tweet.id};
+				 file[tweet.id] = {trope: term.name, link: url.expanded_url};
 			 }
 		 }
 		 console.log(term.name + ' + ' + site + " has " + tweets.statuses.length + " of 100 tweets");
@@ -148,25 +131,12 @@ const searchTwitterSiteTerm = async (client, term, site = 'filter:links') => {
 		 let result = JSON.stringify(file).replace(/\}\,/g, '},\n');
 		 fs.writeFileSync("../Data/file_" + Date.now() + ".json", result);
 		 console.log("Saved " + Object.keys(file).length + " results");
+		 consolidate.main();
 	 }
 	});
 }
 
-(() => {
-/* 	finishedQueries = 0;
-	totalQueries = newsSiteQuerys.length;
-	for (site of newsSiteQuerys) {
-		searchTwitterSite(site);
-	} */
-	
- 	/*finishedQueries = 0;
-	totalQueries = Tropes.length * clients.length;
-	for (client of clients) {
-		for (q of Tropes) {
-			searchTwitterSiteTerm(client, q);
-		} 
-	}*/
-	
+(() => {	
  	finishedQueries = 0;
 	totalQueries = Tropes.length * newsSiteQuerys.length;
 	shuffle(newsSiteQuerys);
