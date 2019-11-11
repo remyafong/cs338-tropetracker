@@ -61,7 +61,8 @@ const searchTwitterSiteTerm = (client, term, site = 'filter:links') => {
 	const params = {
 		q: site + ' ' + term.queries,
 		lang: 'en',
-		count: 100
+		count: 100,
+		tweet_mode: 'extended'
 	}
 
 	client.get('search/tweets', params, function(error, tweets, response) {
@@ -73,7 +74,7 @@ const searchTwitterSiteTerm = (client, term, site = 'filter:links') => {
 
 		 for (tweet of tweets.statuses) {
 			 for (url of tweet.entities.urls){
-				 file[tweet.id] = {trope: term.name, link: url.expanded_url, text: tweet.text};
+				 file[tweet.id] = {trope: term.name, link: url.expanded_url, text: tweet.full_text};
 			 }
 		 }
 		 console.log(term.name + ' + ' + site + " has " + tweets.statuses.length + " of 100 tweets");
