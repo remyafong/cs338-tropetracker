@@ -35,44 +35,32 @@ const sortedObject = (obj) => {
 	return obj;
 }
 
-const id2trope = (data) => {
-	const tropeTable = {};
+createTable = (key, value, data) => {
+	const table = {};
 
 	Object.keys(data).forEach((id) => {
-    const l = data[id].link.replace(/[\#\.\/ ]/g, '_');
-    const t = data[id].trope.replace(/[\#\.\/ ]/g, '_');
+    const k = data[id][key].replace(/[\#\.\/ ]/g, '_');
+    const v = data[id][value].replace(/[\#\.\/ ]/g, '_');
 
-		if (tropeTable[t] && tropeTable[t][l]) {
-      tropeTable[t][l].count++;
-      tropeTable[t][l].id.push(id);
+		if (table[k] && table[k][v]) {
+      table[k][v].count++;
+      table[k][v].id.push(id);
     }
     else {
-      tropeTable[t] = tropeTable[t] ? tropeTable[t] : {};
-      tropeTable[t][l] = {count: 1, id: [id]};
+      table[k] = table[k] ? table[k] : {};
+      table[k][v] = {count: 1, id: [id]};
     }
 	});
 
-  return tropeTable;
+  return table;
+}
+
+const id2trope = (data) => {
+	return createTable('trope', 'link', data);
 }
 
 const id2link = (data) => {
-	const tropeTable = {};
-
-	Object.keys(data).forEach((id) => {
-    const l = data[id].link.replace(/[\#\.\/ ]/g, '_');
-    const t = data[id].trope.replace(/[\#\.\/ ]/g, '_');
-
-		if (tropeTable[l] && tropeTable[l][t]) {
-      tropeTable[l][t].count++;
-      tropeTable[l][t].id.push(id);
-    }
-    else {
-      tropeTable[l] = tropeTable[l] ? tropeTable[l] : {};
-      tropeTable[l][t] = {count: 1, id: [id]};
-    }
-	});
-
-  return tropeTable;
+	return createTable('link', 'trope', data);
 }
 
 const firebaseUpload = (data) => {
