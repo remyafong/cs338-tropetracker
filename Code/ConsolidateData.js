@@ -67,9 +67,10 @@ const firebaseUpload = (data) => {
 	idRef.set(data);
 	tropeRef.set(id2trope(data));
 	linkRef.set(id2link(data));
+  return;
 }
 
-const main = async () => {
+const cd = async (newData) => {
 	const DataFolder = "../Data/";
 	const allDataFile = "../ConsolidatedData.json";
 	const files = fs.readdirSync(DataFolder);
@@ -79,10 +80,7 @@ const main = async () => {
     allResults = snapshot.val();
   });
 
-	files.forEach((file) => {
-		const fileData = JSON.parse(fs.readFileSync(DataFolder + file));
-		allResults = {...allResults, ...fileData};
-	});
+  allResults = {...allResults, ...newData};
 
 	console.log("There are " + Object.keys(allResults).length + " data points");
 	fs.writeFileSync(allDataFile, JSON.stringify(allResults).replace(/\}\,/g, '},\n'));
@@ -95,7 +93,7 @@ const main = async () => {
 	console.log(sortedObject(tropeCount));
 
 	firebaseUpload(allResults);
-	return;
+  return process.exit(22);
 }
 
-module.exports = {main};
+module.exports = {cd};

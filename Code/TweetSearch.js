@@ -2,7 +2,7 @@ const Twitter = require('twitter');
 const Tropes = require('./TropeList');
 const MultiMap = require("collections/multi-map");
 const fs = require('fs');
-const consolidate = require('./ConsolidateData')
+const consolidate = require('./ConsolidateData');
 
 const client1 = new Twitter({
   consumer_key: 'UruGJu3E78afMz3WPQMPUUnDk',
@@ -28,84 +28,84 @@ const client3 = new Twitter({
 const TropeThirds = Math.ceil(Tropes.length / 3);
 
 const clients = [{c: client1, t: Tropes.slice(0, TropeThirds)},
-		{c: client2, t: Tropes.slice(TropeThirds, TropeThirds*2)},
-		{c: client3, t: Tropes.slice(TropeThirds*2, TropeThirds*3)}];
+  {c: client2, t: Tropes.slice(TropeThirds, TropeThirds*2)},
+  {c: client3, t: Tropes.slice(TropeThirds*2, TropeThirds*3)}];
 
 const file = {};
 let totalQueries = 0;
 let finishedQueries = 0;
 
+const params = {
+  q: null,
+  lang: 'en',
+  count: 100,
+  tweet_mode: 'extended'
+}
+
 function shuffle(array) {
-	for(let i = array.length - 1; i; i--){
-		const j = Math.floor(Math.random() * i);
-		const temp = array[i];
-		array[i] = array[j];
-		array[j] = temp;
-	}
+  for(let i = array.length - 1; i; i--){
+    const j = Math.floor(Math.random() * i);
+    const temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
 }
 
 const newsSiteQuerys = [
-	'url:cnn',
-	'url:nbcnews',
-	'url:huffpost',
-	'url:cbsnews',
-	'url:usatoday',
-	'url:nytimes',
-	'url:foxnews',
-	'url:washingtonpost',
-	'url:businessinsider',
-	'url:npr'
+  'url:cnn',
+  'url:nbcnews',
+  'url:huffpost',
+  'url:cbsnews',
+  'url:usatoday',
+  'url:nytimes',
+  'url:foxnews',
+  'url:washingtonpost',
+  'url:businessinsider',
+  'url:npr'
 ];
 
 const searchTwitterSiteTerm = (client, term, site = 'filter:links') => {
-	const params = {
-		q: site + ' ' + term.queries,
-		lang: 'en',
-		count: 100,
-		tweet_mode: 'extended'
-	}
+  params.q = site + ' ' + term.queries;
 
-	client.get('search/tweets', params, function(error, tweets, response) {
-		if (!error) {
-			const name = tweets.search_metadata.max_id;
-			const metadata = {
-				contentType: 'json'
-			};
+  client.get('search/tweets', params, function(error, tweets, response) {
+    if (!error) {
+      for (tweet of tweets.statuses) {
+        for (url of tweet.entities.urls){
+          file[tweet.id_str] = {trope: term.name, link: url.expanded_url, text: tweet.full_text};
+        }
+      }
 
-		 for (tweet of tweets.statuses) {
-			 for (url of tweet.entities.urls){
-				 file[tweet.id] = {trope: term.name, link: url.expanded_url, text: tweet.full_text};
-			 }
-		 }
-		 console.log(term.name + ' + ' + site + " has " + tweets.statuses.length + " of 100 tweets");
-		}
-		else {
-			console.log(error);
-		}
+      console.log(term.name + ' + ' + site + " has " + tweets.statuses.length + " of 100 tweets");
+    }
+    else {
+      console.log(error);
+    }
 
-	 finishedQueries++;
+    finishedQueries++;
 
-	 if (finishedQueries == totalQueries) {
-		 let result = JSON.stringify(file).replace(/\}\,/g, '},\n');
-		 fs.writeFileSync("../Data/file_" + Date.now() + ".json", result);
-		 console.log("Saved " + Object.keys(file).length + " results");
-		 consolidate.main();
-     return;
-	 }
-	});
+    if (finishedQueries == totalQueries) {
+      //let result = JSON.stringify(file).replace(/\}\,/g, '},\n');
+      //fs.writeFileSync("../Data/file_" + Date.now() + ".json", result);
+      console.log("Saved " + Object.keys(file).length + " results");
+      consolidate.cd(file);
+      return;
+    }
+  });
+  return;
 }
 
 (() => {
- 	finishedQueries = 0;
-	totalQueries = Tropes.length * newsSiteQuerys.length;
-	shuffle(newsSiteQuerys);
-	for (client of clients) {
-		shuffle(client.t);
-		for (q of client.t) {
-			for (site of newsSiteQuerys) {
-				searchTwitterSiteTerm(client.c, q, site);
-			}
-		}
-	}
-	return;
+  finishedQueries = 0;
+  totalQueries = Tropes.length * newsSiteQuerys.length;
+  shuffle(newsSiteQuerys);
+
+  for (client of clients) {
+    shuffle(client.t);
+    for (q of client.t) {
+      for (site of newsSiteQuerys) {
+        searchTwitterSiteTerm(client.c, q, site);
+      }
+    }
+  }
+  return;
 })()
