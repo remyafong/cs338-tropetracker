@@ -1,4 +1,6 @@
 const fs = require('fs');
+const axios = require('axios');
+const cheerio = require('cheerio');
 const firebase =  require('firebase/app');
 const database = require('firebase/database');
 const storage = require('firebase/storage');
@@ -35,10 +37,12 @@ const sortedObject = (obj) => {
 	return obj;
 }
 
-createTable = (key, value, data) => {
+const createTable = async (key, value, data) => {
 	const table = {};
+  let completed = 0;
+  const dataLength = Object.keys(data).length;
 
-	Object.keys(data).forEach((id) => {
+  for (id of Object.keys(data)) {
     const k = data[id][key].replace(/[\#\.\/ ]/g, '_');
     const v = data[id][value].replace(/[\#\.\/ ]/g, '_');
 
@@ -47,26 +51,41 @@ createTable = (key, value, data) => {
       table[k][v].id.push(id);
     }
     else {
-      table[k] = table[k] ? table[k] : {};
+      if (table[k] == undefined) {
+        table[k] = {value: data[id][key]};
+        try {
+          if (key == 'link') {
+            const pageHTML = await axios.get(data[id][key]);
+            const $ = cheerio.load(pageHTML.data);
+            table[k]["articleTitle"] = $('head title').text();
+          }
+        }
+        catch (e) {
+          console.log(e.toString());
+        }
+      }
       table[k][v] = {count: 1, id: [id]};
     }
-	});
+
+    completed++;
+    if (key == 'link') console.log(completed/dataLength*100);
+	}
 
   return table;
 }
 
-const id2trope = (data) => {
-	return createTable('trope', 'link', data);
+const id2trope = async (data) => {
+	return await createTable('trope', 'link', data);
 }
 
-const id2link = (data) => {
-	return createTable('link', 'trope', data);
+const id2link = async (data) => {
+	return await createTable('link', 'trope', data);
 }
 
-const firebaseUpload = (data) => {
+const firebaseUpload = async (data) => {
 	idRef.set(data);
-	tropeRef.set(id2trope(data));
-	linkRef.set(id2link(data));
+	await tropeRef.set(await id2trope(data));
+	await linkRef.set(await id2link(data));
   return;
 }
 
@@ -92,7 +111,7 @@ const cd = async (newData) => {
 
 	console.log(sortedObject(tropeCount));
 
-	firebaseUpload(allResults);
+	await firebaseUpload(allResults);
   return process.exit(22);
 }
 
