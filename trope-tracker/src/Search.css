@@ -1,0 +1,26 @@
+.searchpage {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  margin-top: 5em;
+}
+
+.title {
+  color: black;
+}
+
+.searchfieldhome {
+  display:flex; 
+  flex-direction:row;
+}
+
+#searchbarhome {
+  width: 35em;
+}
+
+#searchbuttonhome {
+	width: 8em;
+}

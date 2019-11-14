@@ -1,0 +1,18 @@
+.searchresultspage {
+	color: white;
+	margin-left: 2em;
+}
+
+.searchfield {
+  display:flex; 
+  flex-direction:row;
+}
+
+#searchbar {
+  width: 50em;
+  height: 1em;
+}
+
+#searchbutton {
+	width: 8em;
+}
