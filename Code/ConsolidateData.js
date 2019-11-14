@@ -38,26 +38,52 @@ const sortedObject = (obj) => {
 	return obj;
 }
 
+const removeOldIDs = () => {
+		idRef.once('value').then(function(snapshot) {
+		let data = snapshot.val();
+    let orderedIDs = Object.keys(data).sort();
+		
+		for (let i = 0; i < orderedIDs.length-2; i++) {
+			let id1 = orderedIDs[i];
+			let id2 = orderedIDs[i+1];
+			
+			if (data[id1] && data[id1].text && data[id2] && data[id1].text == data[id2].text) {
+				if (id2.slice(-2) == "00") {
+					delete data[id2];
+				}
+				else if (id1.slice(-2) == "00") {
+					delete data[id1];
+				}
+			}
+		}
+		
+		idRef.set(data);
+  });
+}
+
 const removeDuplicates = (tropeData, linkData) => {
+	
+	// Trope Duplicates
 	for (trope in tropeData) {
 		for (let i = 0; i < Object.keys(tropeData[trope]).length; i++) {
 			let ld1 = Object.keys(tropeData[trope])[i];
 			if (ld1 != 'articleTitle' && ld1 != 'value') {
 				for (let j = i + 1; j < Object.keys(tropeData[trope]).length; j++) {
-						let ld2 = Object.keys(tropeData[trope])[j];
-						if (ld2 != 'articleTitle' && ld2 != 'value') {
-							if (linkData[ld1] && linkData[ld2] && linkData[ld1].articleTitle == linkData[ld2].articleTitle) {
-								tropeData[trope][ld1].count += tropeData[trope][ld2].count;
-								tropeData[trope][ld1].id = tropeData[trope][ld1].id.concat(tropeData[trope][ld2].id);
-								delete tropeData[trope][ld2];
-								j++;
-							}
+					let ld2 = Object.keys(tropeData[trope])[j];
+					if (ld2 != 'articleTitle' && ld2 != 'value') {
+						if (linkData[ld1] && linkData[ld2] && linkData[ld1].articleTitle == linkData[ld2].articleTitle) {
+							tropeData[trope][ld1].count += tropeData[trope][ld2].count;
+							tropeData[trope][ld1].id = tropeData[trope][ld1].id.concat(tropeData[trope][ld2].id);
+							delete tropeData[trope][ld2];
+							j++;
 						}
+					}
 				}
 			}
 		}
 	}
 	
+	// Link Duplicates
 	for (let i = 0; i < Object.keys(linkData).length; i++) {
 		let ld1 = linkData[Object.keys(linkData)[i]];
 		for (let j = i + 1; j < Object.keys(linkData).length; j++) {
@@ -127,7 +153,6 @@ const id2link = async (data) => {
 }
 
 const firebaseUpload = async (data) => {
-	idRef.set(data);
 	let tropeData = await id2trope(data);
 	let linkData = await id2link(data);
 	
@@ -136,12 +161,10 @@ const firebaseUpload = async (data) => {
 	let articleData = {};
 	
 	for (link in linkData) {
-		articleData[linkData[link].articleTitle] = linkData[link];
-		articleData[linkData[link].articleTitle].value = linkData[link].articleTitle;
-		articleData[linkData[link].articleTitle].link = linkData[link].value;
-		delete articleData[linkData[link].articleTitle].articleTitle;
-	}
+		if (linkData[link].articleTitle) articleData[linkData[link].articleTitle.replace(/[^a-zA-Z0-9]/g, '_')] = linkData[link];
+	} 
 	
+	idRef.set(data);
 	tropeRef.set(tropeData);
 	linkRef.set(linkData);
 	articleRef.set(articleData);
@@ -151,7 +174,6 @@ const firebaseUpload = async (data) => {
 const cd = async (newData) => {
 	const DataFolder = "../Data/";
 	const allDataFile = "../ConsolidatedData.json";
-	const files = fs.readdirSync(DataFolder);
 
 	let allResults = {};
   await idRef.once('value').then(function(snapshot) {
