@@ -4,34 +4,47 @@ import { Link } from 'react-router-dom';
 import { Button, TextField } from '@material-ui/core';
 
 const SearchResults = (props) => {
+    const [searchQuery, setSearchQuery] = useState(props.location.pathname.replace('/search/',''));
+    console.log(searchQuery)
     const [results, setResults] = useState('');
     const [finishedSearch, setFinishedSearch] = useState(false);
 
     useEffect(() => {
-      if (props.searchQuery && props.tropeList && props.linkList) {
-        console.log(props.tropeList)
-        setResults(getResults());
+      setResults(getResults(searchQuery));
+    }, [])
+
+    useEffect(() => {
+      var newSearch = props.location.pathname.replace('/search/','');
+      if (searchQuery !== newSearch) {
+        window.location.reload();
+        setSearchQuery(newSearch);
+        setResults(getResults(newSearch));
       }
-    }, [props.searchQuery, props.tropeList, props.linkList])
+    }, [props.location.pathname])
 
     function handleSearchQueryUpdate(event) {
-      props.setSearchQuery(event.target.value);
+      setSearchQuery(event.target.value);
     }
 
-    function getResults() {
-      if (props.tropeList.hasOwnProperty(props.searchQuery)) {
-        
-        setFinishedSearch(true);
-        return props.tropeList[props.searchQuery];
+    function keyPress(e) {
+      if(e.keyCode == 13){
+         console.log('value', e.target.value);
+         props.history.push(`/search/${searchQuery}`);
+         window.location.reload();
       }
-      else if (props.linkList.hasOwnProperty(props.searchQuery)) {
+    }
+
+    function searchButtonClick() {
+        props.history.push(`/search/${searchQuery}`);
+        window.location.reload();
+    }
+
+    function getResults(searchTerm) {
+      setTimeout(function() {
         setFinishedSearch(true);
-        return props.linkList[props.searchQuery];
-      }
-      else {
-        setFinishedSearch(true);
-        return false;
-      }
+      }, 1000);
+      
+      return false;
     }
 
     return (
@@ -39,27 +52,29 @@ const SearchResults = (props) => {
         <div className="searchfield">
             <TextField
                 id="searchbar"
-                style={{ marginRight: 8 }}
-                defaultValue={props.searchQuery}
-                margin="normal"
+                defaultValue={searchQuery}
                 variant="outlined"
-                InputLabelProps={{
-                  shrink: true,
-                }}
                 onChange={handleSearchQueryUpdate}
+                onKeyDown={keyPress}
               />
-              <Button 
-                id="searchbutton" 
-                variant="contained"
-                style={{ textTransform: "capitalize", margin: "8px", fontSize: "15px", fontWeight: "bold" }} 
-                color="primary"
-                component={Link} 
-                to={`/search/${props.searchQuery}`}
-              >
-                Search
-              </Button>  
+              <div>
+                <Link to={`/search/${searchQuery}`} style={{ textDecoration: "none"}}>
+                  <Button 
+                    id="searchbutton" 
+                    variant="contained"
+                    style={{ textTransform: "capitalize", marginLeft: "10px", marginTop: "-1px", fontSize: "15px", fontWeight: "bold", height: "55px" }} 
+                    color="primary"
+                    onClick={() => {searchButtonClick()}}
+                  >
+                    Search
+                  </Button>
+                </Link>
+              </div>
           </div>
           <div className="searchresults">
+            {!finishedSearch &&
+              <p>Loading results...</p>
+            }
             {finishedSearch && !results &&
               <p>No results found. Please try another search.</p>
             }

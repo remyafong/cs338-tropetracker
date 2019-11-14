@@ -13,8 +13,8 @@
 }
 
 .searchfieldhome {
-  display:flex; 
-  flex-direction:row;
+  display: inline-block;
+  align-content: center;
 }
 
 #searchbarhome {

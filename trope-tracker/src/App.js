@@ -30,7 +30,6 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database().ref();
 
 function App () {
-  const [searchQuery, setSearchQuery] = useState(null);
   const [tropeList, setTropeList] = useState([]);
   const [linkList, setLinkList] = useState([]);
   const [articleList, setArticleList] = useState(null);
@@ -112,17 +111,27 @@ function App () {
       <HashRouter>
         <div className="app">
           <ul className="header">
-            <li><NavLink to="/search" activeStyle={{ color: 'red' }}>Search</NavLink></li>
+            <li>
+              <NavLink 
+                exact to="/" 
+                activeStyle={{ color: 'red' }}
+                isActive={(match, location) => {
+                  return location.pathname == '/' || location.pathname.includes('search');
+                }}
+                >
+                Search
+              </NavLink>
+            </li>
             <li><NavLink to="/tropes" activeStyle={{ color: 'red' }}>Tropes</NavLink></li>
           </ul>
           <div className="content">
             <Route 
-              exact path="/search"
-              render={(props) => <Search {...props} searchQuery={searchQuery} setSearchQuery={setSearchQuery}/>}
+              exact path="/"
+              render={(props) => <Search {...props}/>}
             />
             <Route 
-              path={`/search/${searchQuery}`}
-              render={(props) => <SearchResults {...props} searchQuery={searchQuery} setSearchQuery={setSearchQuery} tropeList={tropeList} linkList={linkList}/>}
+              path="/search/"
+              render={(props) => <SearchResults {...props} tropeList={tropeList} linkList={linkList}/>}
             />
             <Route 
               path="/tropes" 

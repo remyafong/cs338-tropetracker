@@ -9,13 +9,15 @@ import {
 } from "react-router-dom";
 
 const Search = (props) => {
+    const [searchQuery, setSearchQuery] = useState(null);
+
     function handleSearchQueryUpdate(event) {
-      props.setSearchQuery(event.target.value);
+      setSearchQuery(event.target.value);
     }
 
     function keyPress(e){
       if(e.keyCode == 13){
-         console.log('value', e.target.value);
+         props.history.push(`/search/${searchQuery}`);
       }
     }
  
@@ -27,26 +29,23 @@ const Search = (props) => {
         <div className="searchfield">
           <TextField
             id="searchbarhome"
-            style={{ margin: 8 }}
             placeholder="Enter a trope or news article url..."
-            margin="normal"
             variant="outlined"
-            InputLabelProps={{
-              shrink: true,
-            }}
             onChange={handleSearchQueryUpdate}
             onKeyDown={keyPress}
           /> 
-          <Button 
-            id="searchbuttonhome" 
-            variant="contained"
-            style={{ textTransform: "capitalize", margin: "8px", fontSize: "15px", fontWeight: "bold" }} 
-            color="primary"
-            component={Link} 
-            to={`/search/${props.searchQuery}`}
-          >
-            Search
-          </Button>
+          <div>
+            <Link to={`/search/${searchQuery}`} style={{ textDecoration: "none"}}>
+              <Button 
+                id="searchbuttonhome" 
+                variant="contained"
+                style={{ textTransform: "capitalize", marginLeft: "10px", marginTop: "-1px", fontSize: "15px", fontWeight: "bold", height: "55px" }} 
+                color="primary"
+              >
+                Search
+              </Button>
+            </Link>
+          </div>
         </div> 
       </div> 
     );
