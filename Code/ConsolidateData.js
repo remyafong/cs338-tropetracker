@@ -22,6 +22,7 @@ const ref = firebase.database().ref();
 const idRef = ref.child('tweet_id');
 const tropeRef = ref.child('trope');
 const linkRef = ref.child('link');
+const articleRef = ref.child('article');
 
 const sortedObject = (obj) => {
 	const arr = [];
@@ -35,6 +36,49 @@ const sortedObject = (obj) => {
 	arr.forEach((a) => obj[a[0]] = a[1]);
 
 	return obj;
+}
+
+const removeDuplicates = (tropeData, linkData) => {
+	for (trope in tropeData) {
+		for (let i = 0; i < Object.keys(tropeData[trope]).length; i++) {
+			let ld1 = Object.keys(tropeData[trope])[i];
+			if (ld1 != 'articleTitle' && ld1 != 'value') {
+				for (let j = i + 1; j < Object.keys(tropeData[trope]).length; j++) {
+						let ld2 = Object.keys(tropeData[trope])[j];
+						if (ld2 != 'articleTitle' && ld2 != 'value') {
+							if (linkData[ld1] && linkData[ld2] && linkData[ld1].articleTitle == linkData[ld2].articleTitle) {
+								tropeData[trope][ld1].count += tropeData[trope][ld2].count;
+								tropeData[trope][ld1].id = tropeData[trope][ld1].id.concat(tropeData[trope][ld2].id);
+								delete tropeData[trope][ld2];
+								j++;
+							}
+						}
+				}
+			}
+		}
+	}
+	
+	for (let i = 0; i < Object.keys(linkData).length; i++) {
+		let ld1 = linkData[Object.keys(linkData)[i]];
+		for (let j = i + 1; j < Object.keys(linkData).length; j++) {
+			let ld2 = linkData[Object.keys(linkData)[j]];
+			if (ld1.articleTitle && ld1.articleTitle == ld2.articleTitle) {
+				for (trope in ld2) {
+					if (trope != 'articleTitle' && trope != 'value') {
+						if (ld1[trope]) {
+							ld1[trope].count += ld2[trope].count;
+							ld1[trope].id = ld2[trope].id.concat(ld1[trope].id);
+						}
+						else {
+							ld1[trope] = ld2[trope];
+						}
+					}
+				}
+				delete linkData[Object.keys(linkData)[j]];
+				j++;
+			}
+		}
+	}
 }
 
 const createTable = async (key, value, data) => {
@@ -84,8 +128,23 @@ const id2link = async (data) => {
 
 const firebaseUpload = async (data) => {
 	idRef.set(data);
-	await tropeRef.set(await id2trope(data));
-	await linkRef.set(await id2link(data));
+	let tropeData = await id2trope(data);
+	let linkData = await id2link(data);
+	
+	removeDuplicates(tropeData, linkData);
+	
+	let articleData = {};
+	
+	for (link in linkData) {
+		articleData[linkData[link].articleTitle] = linkData[link];
+		articleData[linkData[link].articleTitle].value = linkData[link].articleTitle;
+		articleData[linkData[link].articleTitle].link = linkData[link].value;
+		delete articleData[linkData[link].articleTitle].articleTitle;
+	}
+	
+	tropeRef.set(tropeData);
+	linkRef.set(linkData);
+	articleRef.set(articleData);
   return;
 }
 
