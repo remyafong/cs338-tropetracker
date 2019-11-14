@@ -1,0 +1,49 @@
+.tropepage {
+	color: white;
+	margin-left: 2em;
+}
+
+.title {
+	color: black;
+	text-align: left;
+}
+
+
+.tropes {
+	margin-right: 2em;
+}
+
+.entry {
+	display: inline-block;
+}
+
+.url {
+  float: left;
+  margin-right: 3em;
+  width: 45em;
+}
+
+.tweets {
+	float: left;
+}
+
+.tweetPanel {
+	width: 25em;
+	
+}
+
+.tweetPanelHeader {
+	background: rgba(63, 81, 181,0.3);
+	padding: 2em;
+}
+
+.tweetPanelContent {
+	padding: 2em;
+	padding-top: 1em;
+	padding-bottom: 5em;
+}
+
+.tweetText {
+	margin-top: 1.5em;
+	margin-bottom: 0.5em;
+}
