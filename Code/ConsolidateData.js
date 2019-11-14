@@ -162,7 +162,7 @@ const firebaseUpload = async (data) => {
 	
 	for (link in linkData) {
 		if (linkData[link].articleTitle) articleData[linkData[link].articleTitle.replace(/[^a-zA-Z0-9]/g, '_')] = linkData[link];
-	}
+	} 
 	
 	idRef.set(data);
 	tropeRef.set(tropeData);
