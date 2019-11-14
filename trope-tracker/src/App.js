@@ -76,7 +76,7 @@ function App () {
         return a < b ? -1 : (a > b ? 1 : 0);
     });
 
-    //console.log(formattedTropes)
+    console.log(formattedTropes)
     return formattedTropes;
   }
 
@@ -131,7 +131,7 @@ function App () {
             />
             <Route 
               path="/search/"
-              render={(props) => <SearchResults {...props} tropeList={tropeList} linkList={linkList}/>}
+              render={(props) => <SearchResults {...props} tropeList={tropeList} linkList={linkList} articleList={articleList} tweetList={tweetList}/>}
             />
             <Route 
               path="/tropes" 
