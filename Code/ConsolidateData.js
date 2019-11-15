@@ -42,11 +42,11 @@ const removeOldIDs = () => {
 		idRef.once('value').then(function(snapshot) {
 		let data = snapshot.val();
     let orderedIDs = Object.keys(data).sort();
-		
+
 		for (let i = 0; i < orderedIDs.length-2; i++) {
 			let id1 = orderedIDs[i];
 			let id2 = orderedIDs[i+1];
-			
+
 			if (data[id1] && data[id1].text && data[id2] && data[id1].text == data[id2].text) {
 				if (id2.slice(-2) == "00") {
 					delete data[id2];
@@ -56,13 +56,13 @@ const removeOldIDs = () => {
 				}
 			}
 		}
-		
+
 		idRef.set(data);
   });
 }
 
 const removeDuplicates = (tropeData, linkData) => {
-	
+
 	// Trope Duplicates
 	for (trope in tropeData) {
 		for (let i = 0; i < Object.keys(tropeData[trope]).length; i++) {
@@ -75,14 +75,14 @@ const removeDuplicates = (tropeData, linkData) => {
 							tropeData[trope][ld1].count += tropeData[trope][ld2].count;
 							tropeData[trope][ld1].id = tropeData[trope][ld1].id.concat(tropeData[trope][ld2].id);
 							delete tropeData[trope][ld2];
-							j++;
+							j--;
 						}
 					}
 				}
 			}
 		}
 	}
-	
+
 	// Link Duplicates
 	for (let i = 0; i < Object.keys(linkData).length; i++) {
 		let ld1 = linkData[Object.keys(linkData)[i]];
@@ -101,7 +101,7 @@ const removeDuplicates = (tropeData, linkData) => {
 					}
 				}
 				delete linkData[Object.keys(linkData)[j]];
-				j++;
+        j--;
 			}
 		}
 	}
@@ -155,19 +155,21 @@ const id2link = async (data) => {
 const firebaseUpload = async (data) => {
 	let tropeData = await id2trope(data);
 	let linkData = await id2link(data);
-	
+
 	removeDuplicates(tropeData, linkData);
-	
+
 	let articleData = {};
-	
+
 	for (link in linkData) {
 		if (linkData[link].articleTitle) articleData[linkData[link].articleTitle.replace(/[^a-zA-Z0-9]/g, '_')] = linkData[link];
-	} 
-	
-	idRef.set(data);
-	tropeRef.set(tropeData);
-	linkRef.set(linkData);
-	articleRef.set(articleData);
+	}
+
+	await idRef.set(data);
+	await tropeRef.set(tropeData);
+	await linkRef.set(linkData);
+	await articleRef.set(articleData);
+
+  console.log("Firebase Upload Complete");
   return;
 }
 
