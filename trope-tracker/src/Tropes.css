@@ -8,23 +8,39 @@
 	text-align: left;
 }
 
+.loading {
+	text-align: center;
+}
+
+.loadingChild {
+	display: inline-block;
+	vertical-align: middle;
+}
 
 .tropes {
 	margin-right: 2em;
 }
 
 .entry {
-	display: inline-block;
+	position:relative;
+	 width:100%;
+	 display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 0.5em;
 }
 
 .url {
-  float: left;
-  margin-right: 3em;
+  margin-right: 25px;
   width: 45em;
+  display: flex;
+  vertical-align: middle;
+  align-items: center;
+   width:75%;
 }
 
 .tweets {
-	float: left;
+	display: flex;
+  vertical-align: middle;
 }
 
 .tweetPanel {

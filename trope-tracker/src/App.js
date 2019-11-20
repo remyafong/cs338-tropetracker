@@ -37,7 +37,7 @@ function App () {
 
   useEffect(() => {
      db.on("value", function(snapshot) {
-      console.log(snapshot.val());
+      //console.log(snapshot.val());
       setTropeList(formatTropes(snapshot.val()["trope"],snapshot.val()["link"]));
       setLinkList(formatLinks(snapshot.val()["trope"],snapshot.val()["link"]));
       setArticleList(snapshot.val()["article"]);
@@ -76,7 +76,7 @@ function App () {
         return a < b ? -1 : (a > b ? 1 : 0);
     });
 
-    console.log(formattedTropes)
+    //console.log(formattedTropes)
     return formattedTropes;
   }
 

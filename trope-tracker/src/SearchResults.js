@@ -8,6 +8,7 @@ import Drawer from '@material-ui/core/Drawer';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const SearchResults = (props) => {
     const [searchQuery, setSearchQuery] = useState(props.location.pathname.replace('/search/',''));
@@ -60,9 +61,13 @@ const SearchResults = (props) => {
         var tropes = [];
         tropeMatches.forEach((t) => {
           var trope = props.tropeList.find(x => x.trope == t["name"]);
-          tropes.push(trope);
+          if (trope != undefined)
+            tropes.push(trope);
         })
 
+        tropes = tropes.sort((a,b) => (a["trope"].toLowerCase() > b["trope"].toLowerCase()) ? 1 : ((b["trope"].toLowerCase() > a["trope"].toLowerCase()) ? -1 : 0));
+
+        console.log(tropes);
         setFinishedSearch(true);
         return tropes;
       }
