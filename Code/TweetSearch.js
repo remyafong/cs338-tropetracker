@@ -71,6 +71,18 @@ const searchTwitterSiteTerm = (client, term, site = 'filter:links') => {
     if (!error) {
       for (tweet of tweets.statuses) {
         for (url of tweet.entities.urls){
+					if (url.expanded_url.match(/https:\/\/twitter\.com/)) {
+						const pageHTML = await axios.get(url.expanded_url);
+						const $ = cheerio.load(pageHTML.data);
+						const realURL = $('.TweetTextSize--jumbo .js-display-url').parent().attr('title');
+						
+						if (realURL) {
+							url.expanded_url = realURL;
+						}
+						else {
+							continue;
+						}
+					}
           file[tweet.id_str] = {trope: term.name, link: url.expanded_url, text: tweet.full_text};
         }
       }
