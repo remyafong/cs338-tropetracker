@@ -1,0 +1,65 @@
+.tropepage {
+	color: white;
+	margin-left: 2em;
+}
+
+.title {
+	color: black;
+	text-align: left;
+}
+
+.loading {
+	text-align: center;
+}
+
+.loadingChild {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.tropes {
+	margin-right: 2em;
+}
+
+.entry {
+	position:relative;
+	 width:100%;
+	 display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 0.5em;
+}
+
+.url {
+  margin-right: 25px;
+  width: 45em;
+  display: flex;
+  vertical-align: middle;
+  align-items: center;
+   width:75%;
+}
+
+.tweets {
+	display: flex;
+  vertical-align: middle;
+}
+
+.tweetPanel {
+	width: 25em;
+	
+}
+
+.tweetPanelHeader {
+	background: rgba(63, 81, 181,0.3);
+	padding: 2em;
+}
+
+.tweetPanelContent {
+	padding: 2em;
+	padding-top: 1em;
+	padding-bottom: 5em;
+}
+
+.tweetText {
+	margin-top: 1.5em;
+	margin-bottom: 0.5em;
+}

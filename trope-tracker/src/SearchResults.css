@@ -1,0 +1,22 @@
+.searchresultspage {
+	color: white;
+	margin-left: 2em;
+}
+
+.searchfield {
+  display: flex; 
+  flex-direction: row;
+  align-items: center;
+}
+
+#searchbar {
+  width: 50em;
+}
+
+#searchbutton {
+	width: 8em;
+}
+
+.tropes {
+	margin-top: 2em;
+}
