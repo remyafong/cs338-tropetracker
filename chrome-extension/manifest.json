@@ -7,6 +7,9 @@
       "scripts": ["background.js"],
       "persistent": false
     },
+    "chrome_url_overrides" : {
+      "newtab": "hello.html"
+    },
     "page_action": {
       "default_popup": "popup.html",
       "default_title": "Trope Tracker",

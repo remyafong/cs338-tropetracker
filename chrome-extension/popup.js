@@ -3,10 +3,12 @@ let trope = ['Catch 22', 'Not all that Glitters is Gold', 'David and Goliath']
 
 //gets link from the browser
 let getLink = () => {
+  let url;
   chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-    var url = tabs[0].url;
+   url = tabs[0].url;
    bkg.console.log("URL IS: ", url)
   });
+  return url;
 }
 
 
@@ -38,7 +40,11 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   goToTT.addEventListener('click', () => {
-    
+    let link = getLink()
+    bkg.console.log("link is: ", link)// UNDEFINED WHY?????
+    // chrome.runtime.sendMessage({redirect: link});
+    chrome.runtime.sendMessage({redirect: "http://redirect"});
+    bkg.console.log("HEREE");
   })
 
 });
