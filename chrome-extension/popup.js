@@ -1,18 +1,7 @@
 const bkg = chrome.extension.getBackgroundPage();
 let trope = ['Catch 22', 'Not all that Glitters is Gold', 'David and Goliath']
 
-//gets link from the browser
-let getLink = () => {
-  let url;
-  chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-   url = tabs[0].url;
-   bkg.console.log("URL IS: ", url)
-  });
-  return url;
-}
-
-
-//display tropes  --> don't know if this works
+//display tropes  
 let displayTropes = (foundTropesList) => {
   var toAdd = document.getElementById('links');
     for(let i = 0; i < foundTropesList.length; i++){
@@ -30,9 +19,20 @@ let displayTropes = (foundTropesList) => {
 document.addEventListener('DOMContentLoaded', function() {
   var submit = document.getElementById('submit');
   var goToTT = document.getElementById('goToTT');
+
+  //gets link from the browser
+  let getLink = () => {
+    let url;
+    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+    url = tabs[0].url;
+    // bkg.console.log("URL IS: ", url)
+    });
+    return url;
+  }
+
   // onClick's logic below:
   submit.addEventListener('click', function() {
-      getLink();
+      setTimeout(getLink(), 3000);
       //pull data from database
       //store in variable
       displayTropes(trope) //pass variable instead of trope
@@ -40,11 +40,11 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   goToTT.addEventListener('click', () => {
-    let link = getLink()
-    bkg.console.log("link is: ", link)// UNDEFINED WHY?????
-    // chrome.runtime.sendMessage({redirect: link});
-    chrome.runtime.sendMessage({redirect: "http://redirect"});
-    bkg.console.log("HEREE");
+    let url = setTimeout(getLink(), 3000);
+    bkg.console.log("url is: ", url)
+    chrome.runtime.sendMessage({redirect: url});
+    // chrome.runtime.sendMessage({redirect: "http://redirect"});
+    // bkg.console.log("HEREE");
   })
 
 });

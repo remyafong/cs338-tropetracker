@@ -18,9 +18,9 @@ chrome.runtime.onInstalled.addListener(function() {
   // });
   setTimeout( () => {
     chrome.runtime.onMessage.addListener(function(request, sender) {
-      console.log("request is: ", request)
-      console.log("Sender is: ", sender)
-      console.log("Sender.tab is: ", sender.tab)
+      // console.log("request is: ", request)
+      // console.log("Sender is: ", sender)
+      // console.log("Sender.tab is: ", sender.tab)
       // chrome.tabs.update(sender.tab.id, {url: request.redirect});
       chrome.tabs.create({'url': "chrome://newtab"})
     });
