@@ -21,18 +21,28 @@ document.addEventListener('DOMContentLoaded', function() {
   var goToTT = document.getElementById('goToTT');
 
   //gets link from the browser
-  let getLink = () => {
-    let url;
-    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-    url = tabs[0].url;
-    // bkg.console.log("URL IS: ", url)
-    });
-    return url;
-  }
+  // let getLink = () => {
+  //   let url = "";
+  //   chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+  //     url = tabs[0].url;
+  //     bkg.console.log("URL IN IS: ", url)
+  //     return url;
+  //   });
+  // }
+
+
+  // bkg.console.log("getLink() is ", getLink())
 
   // onClick's logic below:
   submit.addEventListener('click', function() {
-      setTimeout(getLink(), 3000);
+      // setTimeout(getLink(), 3000);
+      let url = "";
+      chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+        url = tabs[0].url;
+        // bkg.console.log("URL IN IS: ", url)
+        // return url;
+      });
+      // getLink(); 
       //pull data from database
       //store in variable
       displayTropes(trope) //pass variable instead of trope
@@ -40,9 +50,19 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   goToTT.addEventListener('click', () => {
-    let url = setTimeout(getLink(), 3000);
+
+    let url = "";
+    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+      url = tabs[0].url;
+      bkg.console.log("URL IN IS: ", url)
+      chrome.runtime.sendMessage({redirect: url});
+      // return url; 
+    });
+
+    // let url = setTimeout(getLink(), 1000);
+    // let url = getLink();
     bkg.console.log("url is: ", url)
-    chrome.runtime.sendMessage({redirect: url});
+    // chrome.runtime.sendMessage({redirect: url});
     // chrome.runtime.sendMessage({redirect: "http://redirect"});
     // bkg.console.log("HEREE");
   })
