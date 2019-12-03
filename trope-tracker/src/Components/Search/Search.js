@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import "./Search.css";
 import { Link } from 'react-router-dom';
 import { Button, TextField } from '@material-ui/core';
-import {
-  Route,
-  NavLink,
-  HashRouter
-} from "react-router-dom";
+// import {
+//   Route,
+//   NavLink,
+//   HashRouter
+// } from "react-router-dom";
 
 const Search = (props) => {
     const [searchQuery, setSearchQuery] = useState(null);
@@ -16,7 +16,7 @@ const Search = (props) => {
     }
 
     function keyPress(e){
-      if(e.keyCode == 13){
+      if(e.keyCode === 13){
          props.history.push(`/search/${searchQuery}`);
       }
     }

@@ -1,0 +1,67 @@
+.searchresultspage {
+	color: white;
+	margin-left: 2em;
+}
+
+.searchfield {
+  display: flex; 
+  flex-direction: row;
+  align-items: center;
+}
+
+#searchbar {
+  width: 50em;
+}
+
+#searchbutton {
+	width: 8em;
+}
+
+.tropes {
+	margin-top: 2em;
+}
+
+.search-field {
+    width: 60%;
+    color: black;
+  }
+  
+  .tropes {
+    margin-top: 2em;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  
+  .entry {
+    display: inline-block;
+  }
+  
+  .url {
+    float: left;
+    margin-right: 3em;
+    width: 45em;
+  }
+  
+  .tweets {
+      float: left;
+  }
+  
+  .tweetPanel {
+    width: 25em;
+  }
+  
+  .tweetPanelHeader {
+      background: rgba(63, 81, 181,0.3);
+      padding: 2em;
+  }
+  
+  .tweetPanelContent {
+      padding: 2em;
+      padding-top: 1em;
+      padding-bottom: 5em;
+  }
+  
+  .tweetText {
+      margin-top: 1.5em;
+      margin-bottom: 0.5em;
+  }

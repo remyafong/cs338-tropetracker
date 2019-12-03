@@ -1,0 +1,66 @@
+.search-page {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  margin-top: 5em;
+}
+
+/* .aa-suggestions-category {
+  float: left !important;
+} */
+
+.aa-dropdown-menu {
+  width: 100% !important;
+}
+
+.title {
+  color: black;
+}
+
+.search-field {
+  width: 60%;
+  color: black;
+}
+
+.tropes {
+  margin-top: 2em;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.entry {
+  display: inline-block;
+}
+
+.url {
+  float: left;
+  margin-right: 3em;
+  width: 45em;
+}
+
+.tweets {
+	float: left;
+}
+
+.tweetPanel {
+  width: 25em;
+}
+
+.tweetPanelHeader {
+	background: rgba(63, 81, 181,0.3);
+	padding: 2em;
+}
+
+.tweetPanelContent {
+	padding: 2em;
+	padding-top: 1em;
+	padding-bottom: 5em;
+}
+
+.tweetText {
+	margin-top: 1.5em;
+	margin-bottom: 0.5em;
+}

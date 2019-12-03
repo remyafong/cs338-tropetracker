@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Button, TextField } from '@material-ui/core';
 
-import Search from "./Search";
-import SearchResults from "./SearchResults";
-import Tropes from "./Tropes";
+import Search from "./Components/Search/Search.js";
+import SearchResults from "./Components/SearchResults/SearchResults.js";
+import Tropes from "./Components/Tropes/Tropes.js";
+import SearchBar from "./Components/SearchBar/SearchBar.js"
 
 import './App.css';
 
@@ -33,11 +33,11 @@ function App () {
   const [tropeList, setTropeList] = useState([]);
   const [linkList, setLinkList] = useState([]);
   const [articleList, setArticleList] = useState(null);
+  //console.log(articleList);
   const [tweetList, setTweetList] = useState(null);
 
   useEffect(() => {
      db.on("value", function(snapshot) {
-      console.log(snapshot.val());
       setTropeList(formatTropes(snapshot.val()["trope"],snapshot.val()["link"]));
       setLinkList(formatLinks(snapshot.val()["trope"],snapshot.val()["link"]));
       setArticleList(snapshot.val()["article"]);
@@ -51,13 +51,13 @@ function App () {
     //console.log(tropeList)
     var formattedTropes = [];
 
-    Object.entries(tropeList).map(([key, value]) => {
+    Object.entries(tropeList).forEach(([key, value]) => {
       var trope = value["value"];
       var links = [];
       var numArticles = 0;
 
-      Object.entries(value).map(([k, v]) => {
-        if (k != 'value' && linkList.hasOwnProperty(k) && linkList[k]["articleTitle"]) {
+      Object.entries(value).forEach(([k, v]) => {
+        if (k !== 'value' && linkList.hasOwnProperty(k) && linkList[k]["articleTitle"]) {
           var url = linkList[k]["value"];
           var articleTitle = linkList[k]["articleTitle"];
           var count = v["count"];
@@ -83,14 +83,14 @@ function App () {
   function formatLinks(tropeList,linkList) {
     var formattedLinks = [];
 
-    Object.entries(linkList).map(([key, value]) => {
+    Object.entries(linkList).forEach(([key, value]) => {
       if (value["articleTitle"]) {
         var link = value["value"];
         var articleTitle = value["articleTitle"];
         var tropes = [];
 
-        Object.entries(value).map(([k, v]) => {
-          if (k != 'value') {
+        Object.entries(value).forEach(([k, v]) => {
+          if (k !== 'value') {
             if (tropeList.hasOwnProperty(k)) {
               var trope = tropeList[k]["value"];
               var count = v["count"];
@@ -116,7 +116,7 @@ function App () {
                 exact to="/" 
                 activeStyle={{ color: 'red' }}
                 isActive={(match, location) => {
-                  return location.pathname == '/' || location.pathname.includes('search');
+                  return location.pathname === '/' || location.pathname.includes('search');
                 }}
                 >
                 Search
@@ -125,9 +125,13 @@ function App () {
             <li><NavLink to="/tropes" activeStyle={{ color: 'red' }}>Tropes</NavLink></li>
           </ul>
           <div className="content">
+            {/* <Route 
+              exact path="/"
+              render={() => <SearchBar tropeList={tropeList} linkList={linkList} articleList={articleList} tweetList={tweetList}></SearchBar>}
+            /> */}
             <Route 
               exact path="/"
-              render={(props) => <Search {...props}/>}
+              render={(props) => <Search {...props} tropeList={tropeList} linkList={linkList} articleList={articleList} tweetList={tweetList}></Search>}
             />
             <Route 
               path="/search/"

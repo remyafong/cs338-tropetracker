@@ -51,8 +51,8 @@ const Tropes = (props) => {
     		{loading && 
     			<p>Loading tropes...</p>
     		}
-    		{!loading &&
-    			<div>
+			{!loading &&
+				<div>
 	    			<div className="tropes">
 		    			{props.tropeList && props.tropeList.map((value, index) => (
 					        <ExpansionPanel>
@@ -64,7 +64,7 @@ const Tropes = (props) => {
 						            {value.links.map((v,i) => (
 						            	<div className="entry">
 						            		<div className="url">
-							            		<a href={v[0]} target="_blank">{v[1]}</a>
+							            		<a href={v[0]} rel="noopener noreferrer" target="_blank">{v[1]}</a>
 							            		<p></p>
 						            		</div>
 						            		<div className="tweets">
@@ -93,14 +93,14 @@ const Tropes = (props) => {
 		    					<div className="tweetPanelHeader">
 		    						<h3>{tweetPanelData["trope"].replace(tweetPanelData["trope"][0],tweetPanelData["trope"][0].toUpperCase())}</h3>
 			    					<p></p>
-			    					<a href={tweetPanelData["link"]} target="_blank">{tweetPanelData["articleName"]}</a>
+			    					<a href={tweetPanelData["link"]} rel="noopener noreferrer" target="_blank">{tweetPanelData["articleName"]}</a>
 		    					</div>
 		    					<div className="tweetPanelContent">
 		    						<h4>Tweets</h4>
 			    					{tweetPanelData["tweets"].map((value, index) => (
 			    						<div>
 				    						<p className="tweetText">{value["text"]}</p>
-				    						<a href={value["link"]} target="_blank" style={{ textDecoration: "none"}}>
+				    						<a href={value["link"]} rel="noopener noreferrer" target="_blank" style={{ textDecoration: "none"}}>
 				    							<Button 
 						            				variant="outlined"
 						            				style={{ textTransform: "none", fontSize: "10px", fontWeight: "bold" }} 
@@ -116,7 +116,7 @@ const Tropes = (props) => {
 		    				</div>
 		    			</Drawer>
 		    		}
-    			</div>
+				</div>
     		}
     		
 		</div>
