@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import { Button } from '@material-ui/core';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import "./TropeSearchView.css";
+import "./SingleTrope.css";
 import { Link } from 'react-router-dom';
-
 
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -15,6 +14,20 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
+
+import firebase from 'firebase/app';
+import 'firebase/database';
+const firebaseConfig = {
+  apiKey: "AIzaSyDJsNN9qdUAdwkQmL-8D91-m4frOKjzSHs",
+  authDomain: "trope-tracker-62549.firebaseapp.com",
+  databaseURL: "https://trope-tracker-62549.firebaseio.com",
+  projectId: "trope-tracker-62549",
+  storageBucket: "trope-tracker-62549.appspot.com",
+  messagingSenderId: "790085425651",
+  appId: "1:790085425651:web:8033e73a0115794231da86",
+  measurementId: "G-BCFM30M7FE"
+};
+
 
 const useStyles = makeStyles({
   card: {
@@ -49,10 +62,32 @@ const useStyles = makeStyles({
   }
 });
 
-const TropeSearchView = (props) => {
+const SingleTrope = (props) => {
+    const [trope, setTrope] = useState(props.location.pathname.replace('/trope/','').replace(/[^a-zA-Z0-9]/g,'_'));
+    const [tropeData, setTropeData] = useState([])
     const [tweetPanel, setTweetPanel] = useState(false);
     const [tweetPanelData, setTweetPanelData] = useState();
+    const [loading, setLoading] = useState(true);
+
     const classes = useStyles();
+    console.log(props)
+
+    useEffect(() => {
+    if (props.tropeList.length > 0) {
+      setTropeData(getTropeData(trope));
+      setLoading(false);
+    }
+  }, [props.tropeList])
+
+    function getTropeData(trope) {
+      var trope2 = trope.replace(/_/g,' ');
+      if (trope2 == "David vs  Goliath")
+        trope2 = "David vs. Goliath"
+      console.log(trope2)
+      var data = props.tropeList.find(x => x.trope == trope2);
+      console.log(data);
+      return data;
+    }
 
     function openTweetPanel(articleName,trope,link) {
         var articleName2 = articleName.replace(/[^a-zA-Z0-9]/g,'_');;
@@ -76,23 +111,24 @@ const TropeSearchView = (props) => {
     }
 
     return (
-        <div>
-            <div className="tropes">
-              {props.results && props.results.map((value, index) => (
-                  <ExpansionPanel TransitionProps={{ unmountOnExit: true }}>
-                    <ExpansionPanelSummary>
-                      <h4>{value.trope.replace(value.trope[0],value.trope[0].toUpperCase())}</h4>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                      <div>
-                        {value.numArticles == 0 &&
-                          <p>No results found.</p>
-                        }
-                        {value.numArticles > 0 && value.links.slice(0,3).map((v,i) => (
-                          <div className="entry">
-                            <Card className={classes.card}>
-                             <div className={classes.details}>
-                            <a href={v[0]} rel="noopener noreferrer" target="_blank" style={{ textDecoration: "none" , color: "black"}}>
+      <div className="tropepage">
+          <div className="title">
+              <h2>{trope.replace(/_/g,' ').replace(trope[0],trope[0].toUpperCase())}</h2>
+          </div>
+          <div style={{ marginTop: -15 }}>
+           <Link to='/tropes' className="returnToTropes" style={{ textDecoration: "none", color: "#ff8080", fontWeight: "bold", fontSize: 14 }}>Return to all tropes</Link>
+          </div>
+           {loading && 
+              <p>Loading tropes...</p>
+            }  
+            {!loading &&
+              <div>
+                <div className="tropes">
+                {tropeData.numArticles > 0 && tropeData.links.map((v,i) => (
+                    <div className="entry">
+                        <Card className={classes.card}>
+                         <div className={classes.details}>
+                        <a href={v[0]} rel="noopener noreferrer" target="_blank" style={{ textDecoration: "none" , color: "black"}}>
                           <CardActionArea>
                           <div className={classes.content}>
                           {v[3] && 
@@ -101,7 +137,7 @@ const TropeSearchView = (props) => {
                               src={v[3]}
                             />
                           }   
-                         <CardContent className={classes.text}>
+                             <CardContent className={classes.text}>
                               <Typography gutterBottom variant="h5" component="h2" style={{ fontSize: 18 }}>
                                 {v[1]}
                               </Typography>
@@ -113,70 +149,54 @@ const TropeSearchView = (props) => {
                           </CardActionArea>
                          </a>
                          </div>
-                         <CardActionArea onClick={() => { openTweetPanel(v[1], value.trope, v[0])}} className={classes.actions}> 
+                         <CardActionArea onClick={() => { openTweetPanel(v[1], tropeData.trope, v[0])}} className={classes.actions}> 
                           <CardActions>    
-                            <Button size="small" color="primary" style={{ backgroundColor: 'transparent',  margin: "0 auto", display: "block" }} onClick={() => { openTweetPanel(v[1], value.trope, v[0])}}>
+                            <Button size="small" color="primary" style={{ backgroundColor: 'transparent',  margin: "0 auto", display: "block" }} onClick={() => { openTweetPanel(v[1], tropeData.trope, v[0])}}>
                               View {v[2]} Tweet{v[2] > 1 && 's'}
                             </Button>
                           </CardActions>
                           </CardActionArea>
                         </Card>
                        </div>
-                        ))}
-                        {value.numArticles > 0 && value.links.length > 3 &&
-                          <Link to={`/trope/${value.trope}`} style={{ textDecoration: "none"}} target="_blank">
-                            <Button >
-                            View more articles
-                             </Button>
-                          </Link>
-
-                          // <Button onClick={() => { showHideArticles(value.trope) }}>
-                          //  View more articles
-                          // </Button>
-                        }
-                      </div>
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
-              ))}
-            </div>
-            {tweetPanelData && 
-                <Drawer anchor="right" open={tweetPanel} onClose={() => {setTweetPanel(false)}}>
+                ))}
+                </div>
+                {tweetPanelData && 
+              <Drawer anchor="right" open={tweetPanel} onClose={() => {setTweetPanel(false)}}>
                 <div 
-                    className="tweetPanel"
-                    role="presentation"
+                  className="tweetPanel"
+                  role="presentation"
                 >
-                    <div className="tweetPanelHeader">
+                  <div className="tweetPanelHeader">
                     <h3>{tweetPanelData["trope"].replace(tweetPanelData["trope"][0],tweetPanelData["trope"][0].toUpperCase())}</h3>
                     <p></p>
-                    <a href={tweetPanelData["link"]} target="_blank">{tweetPanelData["articleName"]}</a>
-                    </div>
-                    <div className="tweetPanelContent">
+                    <a href={tweetPanelData["link"]} rel="noopener noreferrer" target="_blank">{tweetPanelData["articleName"]}</a>
+                  </div>
+                  <div className="tweetPanelContent">
                     <h4>Tweets</h4>
                     {tweetPanelData["tweets"].map((value, index) => (
-                        <div>
+                      <div>
                         <p className="tweetText">{value["text"]}</p>
-                        <a href={value["link"]} target="_blank" style={{ textDecoration: "none"}}>
-                            <Button 
+                        <a href={value["link"]} rel="noopener noreferrer" target="_blank" style={{ textDecoration: "none"}}>
+                          <Button 
                                 variant="outlined"
                                 style={{ textTransform: "none", fontSize: "10px", fontWeight: "bold" }} 
-                                    color="primary"
-                                >
-                                View tweet on Twitter
+                                  color="primary"
+                              >
+                              View tweet on Twitter
                             </Button>
                         </a>
                         <p></p>
-                        </div>
+                      </div>
                     ))}
-                    </div>
+                  </div>
                 </div>
-                </Drawer>
+              </Drawer>
             }
-            {props.suggestTrope && 
-              <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeAeg2L5Z4jYwzBYyMCz3BZKPf00CY4vEnorplLn3jReEq0vA/viewform?embedded=true" width="1640" height="80" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+              </div>
             }
         </div>
     )
 }
 
-export default TropeSearchView;
+export default SingleTrope;
             

@@ -4,6 +4,7 @@ import Search from "./Components/Search/Search.js";
 import SearchResults from "./Components/SearchResults/SearchResults.js";
 import Tropes from "./Components/Tropes/Tropes.js";
 import SearchBar from "./Components/SearchBar/SearchBar.js"
+import SingleTrope from "./Components/SingleTrope/SingleTrope.js"
 
 import './App.css';
 
@@ -33,7 +34,6 @@ function App () {
   const [tropeList, setTropeList] = useState([]);
   const [linkList, setLinkList] = useState([]);
   const [articleList, setArticleList] = useState(null);
-  //console.log(articleList);
   const [tweetList, setTweetList] = useState(null);
 
   useEffect(() => {
@@ -61,7 +61,9 @@ function App () {
           var url = linkList[k]["value"];
           var articleTitle = linkList[k]["articleTitle"];
           var count = v["count"];
-          links.push([url,articleTitle,count]);
+          var articleImg = linkList[k]["articleImg"];
+          var articleDesc = linkList[k]["articleDesc"];
+          links.push([url,articleTitle,count,articleImg,articleDesc]);
           numArticles = numArticles + 1;
         }
       })
@@ -76,7 +78,8 @@ function App () {
         return a < b ? -1 : (a > b ? 1 : 0);
     });
 
-    console.log(formattedTropes)
+    //console.log(formattedTropes)
+   
     return formattedTropes;
   }
 
@@ -87,6 +90,8 @@ function App () {
       if (value["articleTitle"]) {
         var link = value["value"];
         var articleTitle = value["articleTitle"];
+        var articleImg = value["articleImg"];
+        var articleDesc = value["articleDesc"];
         var tropes = [];
 
         Object.entries(value).forEach(([k, v]) => {
@@ -99,7 +104,7 @@ function App () {
           }
         })
          
-         formattedLinks.push({link: link, articleTitle: articleTitle, tropes: tropes});
+         formattedLinks.push({link: link, articleTitle: articleTitle, articleImg: articleImg, articleDesc: articleDesc, tropes: tropes});
         }
      })
     
@@ -122,7 +127,17 @@ function App () {
                 Search
               </NavLink>
             </li>
-            <li><NavLink to="/tropes" activeStyle={{ color: 'red' }}>Tropes</NavLink></li>
+            <li>
+              <NavLink 
+                exact to="/tropes" 
+                activeStyle={{ color: 'red' }}
+                isActive={(match, location) => {
+                  return location.pathname === '/trope' || location.pathname.includes('trope');
+                }}
+                >
+                Tropes
+              </NavLink>
+            </li>
           </ul>
           <div className="content">
             {/* <Route 
@@ -138,8 +153,12 @@ function App () {
               render={(props) => <SearchResults {...props} tropeList={tropeList} linkList={linkList} articleList={articleList} tweetList={tweetList}/>}
             />
             <Route 
-              path="/tropes" 
+              exact path="/tropes" 
               render={(props) => <Tropes {...props} tropeList={tropeList} articleList={articleList} tweetList={tweetList}/>}
+            />
+            <Route 
+              path="/trope/" 
+              render={(props) => <SingleTrope {...props} tropeList={tropeList} articleList={articleList} tweetList={tweetList}/>}
             />
           </div>
         </div>
