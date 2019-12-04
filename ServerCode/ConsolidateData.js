@@ -140,6 +140,11 @@ const createTable = async (key, value, data) => {
               }
             });
           }
+					else {
+						table[k]["articleDesc"] = data[id]["articleDesc"];
+						table[k]["articleImg"] = data[id]["articleImg"];
+						table[k]["articleTitle"] = data[id]["articleTitle"];
+					}
         }
         catch (e) {
           console.log(e.toString());
