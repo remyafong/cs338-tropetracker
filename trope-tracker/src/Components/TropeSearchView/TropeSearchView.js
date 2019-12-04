@@ -13,7 +13,6 @@ import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles({
@@ -57,6 +56,8 @@ const TropeSearchView = (props) => {
     function openTweetPanel(articleName,trope,link) {
         var articleName2 = articleName.replace(/[^a-zA-Z0-9]/g,'_');;
         var trope2 = trope.replace(/ /g,'_');
+        if (trope2 === "David_vs._Goliath")
+          trope2 = "David_vs__Goliath"
         var tweetIDs = props.articleList[articleName2][trope2]["id"];
         
         var tweets = [];
@@ -77,7 +78,7 @@ const TropeSearchView = (props) => {
 
     return (
         <div>
-            <div className="tropes">
+            <div className="tropes" style={{ marginLeft: 20}}>
               {props.results && props.results.map((value, index) => (
                   <ExpansionPanel TransitionProps={{ unmountOnExit: true }}>
                     <ExpansionPanelSummary>
@@ -85,7 +86,7 @@ const TropeSearchView = (props) => {
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
                       <div>
-                        {value.numArticles == 0 &&
+                        {value.numArticles === 0 &&
                           <p>No results found.</p>
                         }
                         {value.numArticles > 0 && value.links.slice(0,3).map((v,i) => (
@@ -99,10 +100,11 @@ const TropeSearchView = (props) => {
                             <img
                               className={classes.media}
                               src={v[3]}
+                              alt={v[1]}
                             />
                           }   
                          <CardContent className={classes.text}>
-                              <Typography gutterBottom variant="h5" component="h2" style={{ fontSize: 18 }}>
+                              <Typography gutterBottom variant="h5" component="h2" style={{ fontSize: 18, fontWeight: "bold" }}>
                                 {v[1]}
                               </Typography>
                               <Typography variant="body2" color="textSecondary" component="p" style={{ fontSize: 14 }} >
@@ -169,9 +171,6 @@ const TropeSearchView = (props) => {
                     </div>
                 </div>
                 </Drawer>
-            }
-            {props.suggestTrope && 
-              <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeAeg2L5Z4jYwzBYyMCz3BZKPf00CY4vEnorplLn3jReEq0vA/viewform?embedded=true" width="1640" height="80" frameborder="0" marginheight="0" marginwidth="0"></iframe>
             }
         </div>
     )

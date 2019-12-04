@@ -13,9 +13,7 @@ import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
-import Collapse from '@material-ui/core/Collapse';
 
 const useStyles = makeStyles({
   card: {
@@ -54,17 +52,10 @@ const Tropes = (props) => {
 	const [loading, setLoading] = useState(true);
 	const [tweetPanel, setTweetPanel] = useState(false);
 	const [tweetPanelData, setTweetPanelData] = useState();
-	const [tropeExpanded, setTropeExpanded] = useState([]);
 	const classes = useStyles();
 
 	useEffect(() => {
 		if (props.tropeList.length > 0) {
-			var bools = [];
-			for (var i = 0; i < props.tropeList.length; i++) {
-				bools.push({trope: props.tropeList[i]["trope"], expanded: false})
-			}
-			console.log(bools);
-			setTropeExpanded(bools);
 			setLoading(false);
 		}
 	}, [props.tropeList])
@@ -72,6 +63,8 @@ const Tropes = (props) => {
 	function openTweetPanel(articleName,trope,link) {
 		var articleName2 = articleName.replace(/[^a-zA-Z0-9]/g,'_');
 		var trope2 = trope.replace(/ /g,'_');
+		if (trope2 === "David_vs._Goliath")
+          trope2 = "David_vs__Goliath"
 		var tweetIDs = props.articleList[articleName2][trope2]["id"];
 		console.log(props.articleList);
 		var tweets = [];
@@ -94,21 +87,15 @@ const Tropes = (props) => {
 		setTweetPanel(true);	
 	}
 
-	function showHideArticles(trope) {
-		var old = tropeExpanded;
-		var oldState = tropeExpanded.find(x => x.trope == trope)["expanded"];
-		var index = tropeExpanded.find(x => x.trope == trope);
-		old[trope] = !oldState;
-		setTropeExpanded(old);
-	}
-
     return (
 		<div className="tropepage">
 			<div className="title">
     			<h2>Trope List</h2>
     		</div>
     		{loading && 
-    			<p>Loading tropes...</p>
+    			<div style={{ marginLeft: 20}}>
+    				<p>Loading tropes...</p>
+    			</div>
     		}
 			{!loading &&
 				<div>
@@ -120,7 +107,7 @@ const Tropes = (props) => {
 						        </ExpansionPanelSummary>
 						        <ExpansionPanelDetails>
 						          <div>
-						          	{value.numArticles == 0 &&
+						          	{value.numArticles === 0 &&
 						          		<p>No results found.</p>
 						          	}
 						            {value.numArticles > 0 && value.links.slice(0,3).map((v,i) => (
@@ -134,10 +121,11 @@ const Tropes = (props) => {
 										      	<img
 										          className={classes.media}
 										          src={v[3]}
+										          alt={v[1]}
 										        />
 										      }   
 												 <CardContent className={classes.text}>
-										          <Typography gutterBottom variant="h5" component="h2" style={{ fontSize: 18 }}>
+										          <Typography gutterBottom variant="h5" component="h2" style={{ fontSize: 18, fontWeight: "bold" }}>
 										            {v[1]}
 										          </Typography>
 										          <Typography variant="body2" color="textSecondary" component="p" style={{ fontSize: 14 }} >
@@ -164,10 +152,6 @@ const Tropes = (props) => {
 								            View more articles
 							            	 </Button>
 						            	</Link>
-
-						            	// <Button onClick={() => { showHideArticles(value.trope) }}>
-							            // 	View more articles
-						            	// </Button>
 						            }
 						          </div>
 						        </ExpansionPanelDetails>

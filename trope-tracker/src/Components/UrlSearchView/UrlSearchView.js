@@ -1,107 +1,97 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import "./UrlSearchView.css";
 import { Button } from '@material-ui/core';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import cheerio from 'cheerio';
+
+import { makeStyles } from '@material-ui/core/styles';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+
+const useStyles = makeStyles({
+  card: {
+    height: "auto",
+    width: "100%",
+    overflow: "auto",
+    display: 'flex',
+    marginBottom: 10
+  },
+  content: {
+    display: 'flex'
+  },
+  media: {
+      height: "auto",
+      maxHeight: 250,
+      width: 300,
+      flexGrow: 0,
+      display: 'inline-block'
+  },
+  text: {
+    flex: 1,
+    flexGrow: 2000,
+    display: 'inline-block'
+  },
+  actions: {
+    width: 200,
+    flexGrow: 100,
+    display: 'inline-block',
+  },
+  description: {
+    color: "blue",
+    fontSize: 14
+  }
+});
+
 
 const UrlSearchView = (props) => {
-    const [loading, setLoading] = useState(true);
-    const [results, setResults] = useState([]);
-    const [tropes, setTropes] = useState([]);
-    //const [tropeKeys, setTropeKeys] = useState([]);
-    const [tweets, setTweets] = useState([]);
-    const [tweetIds, setTweetIds] = useState([]);
-    //console.log("results are ", results)
-
-    useEffect(() => {
-        async function getResults() {
-            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-            const fullUrl = proxyUrl + props.searchUrl
-            const urlResponse = await fetch(fullUrl);
-            const htmlString = await urlResponse.text();
-            const $ = await cheerio.load(htmlString);
-            const articleTitle = $('head title').text();
-            let searchResults = [];
-            Object.entries(props.articleList).forEach(([k, v]) => {
-                if (v.articleTitle === articleTitle) {
-                    searchResults.push(v)
-                }
-            })
-            return searchResults;
-        }
-        if (props.articleList && props.tweetList) {
-            getResults().then(val => {
-                //console.log("val is", val);
-                setResults(val);
-                let resultTropes = [];
-                let keyNames = [];
-                val.forEach((hit) => {
-                    Object.keys(hit).forEach((k) => {
-                        if (k.includes("_")) {
-                            keyNames.push(k)
-                            const tropeName = k.replace(/_/g, ' ');
-                            resultTropes.push(tropeName);
-                        }
-                    })
-                })
-                //console.log(keyNames, resultTropes);
-                setTropes(resultTropes);
-                //setTropeKeys(keyNames);
-                let resultTweets = []
-                let tweetIdArr = [];
-                keyNames.forEach((x, i) => {
-                    let currTweets = [];
-                    const idArr = val[0][x].id
-                    idArr.forEach((id) => {
-                        Object.entries(props.tweetList).forEach(([k, v]) => {
-                            if (k === id) {
-                                currTweets.push(v.text);
-                            }
-                        })
-                    })
-                    tweetIdArr.push(idArr);
-                    resultTweets.push(currTweets);
-                })
-                setTweetIds(tweetIdArr);
-                //console.log("tweetIdArr is", tweetIdArr);
-                setTweets(resultTweets); 
-                setLoading(false);
-            });
-        }
-        
-       
-    }, [props.articleList, props.tweetList, props.searchUrl]);
-
+    const classes = useStyles();
+    console.log(props.results)
+    
     return (
         <div>
             <div className="tropes">
-                {loading && 
-                    <p>Loading results...</p> 
-                }
-                {!loading && tweets.length === 0 &&
-                    <p>No results found.</p> 
-                }
-                {!loading && tweets.length > 0 && 
+                {props.tweets.length > 0 && 
                 <div>
-                    <h3 className="article-info">{results[0].articleTitle}</h3>
-                    <h4 className="article-info article-desc">{results[0].articleDesc}</h4>
-                    {tropes.map((value, index) => (
+                    <Card className={classes.card}>
+                         <div className={classes.details}>
+                          <div>
+                          <div className={classes.content}>
+                          {props.results[0].articleImg && 
+                            <img
+                              className={classes.media}
+                              src={props.results[0].articleImg}
+                              alt={props.results[0].articleTitle}
+                            />
+                          }   
+                             <CardContent className={classes.text}>
+                              <Typography gutterBottom variant="h5" component="h2" style={{ fontSize: 18, fontWeight: "bold" }}>
+                                {props.results[0].articleTitle}
+                              </Typography>
+                              <Typography variant="body2" color="textSecondary" component="p" style={{ fontSize: 14 }} >
+                                {props.results[0].articleDesc}
+                              </Typography>
+                            </CardContent>
+                            </div>
+                          </div>
+                         </div>
+                        </Card>
+                   
+                    {props.tropes.map((value, index) => (
                         <ExpansionPanel key={index}>
                             <ExpansionPanelSummary>
-                                <h3 className="trope-name">{value}</h3>
+                                <h3 className="trope-name">{value.replace(value[0],value[0].toUpperCase())}</h3>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>
                                 <div>
-                                    {/* {console.log("tweets are", tweets)} */}
-                                    {tweets[index].map((v, i) => (
+                                    {props.tweets[index].map((v, i) => (
                                         <div key={v+i}>
                                             <div className="tweet">{v}</div>
-                                            <a href={`http://twitter.com/a/status/${tweetIds[index][i]}`} rel="noopener noreferrer" target="_blank" style={{ textDecoration: "none"}}>
+                                            <a href={`http://twitter.com/a/status/${props.tweetIds[index][i]}`} rel="noopener noreferrer" target="_blank" style={{ textDecoration: "none"}}>
                                                 <Button 
                                                     variant="outlined"
-                                                    style={{ textTransform: "none", fontSize: "15px", fontWeight: "bold" }} 
+                                                    style={{ textTransform: "none", fontSize: "15px", fontWeight: "bold", marginLeft: 50 }} 
                                                         color="primary"
                                                     >
                                                     View tweet on Twitter

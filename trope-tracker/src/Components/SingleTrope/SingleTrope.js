@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import { Button } from '@material-ui/core';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import "./SingleTrope.css";
 import { Link } from 'react-router-dom';
 
@@ -12,22 +9,7 @@ import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
-
-import firebase from 'firebase/app';
-import 'firebase/database';
-const firebaseConfig = {
-  apiKey: "AIzaSyDJsNN9qdUAdwkQmL-8D91-m4frOKjzSHs",
-  authDomain: "trope-tracker-62549.firebaseapp.com",
-  databaseURL: "https://trope-tracker-62549.firebaseio.com",
-  projectId: "trope-tracker-62549",
-  storageBucket: "trope-tracker-62549.appspot.com",
-  messagingSenderId: "790085425651",
-  appId: "1:790085425651:web:8033e73a0115794231da86",
-  measurementId: "G-BCFM30M7FE"
-};
-
 
 const useStyles = makeStyles({
   card: {
@@ -63,7 +45,7 @@ const useStyles = makeStyles({
 });
 
 const SingleTrope = (props) => {
-    const [trope, setTrope] = useState(props.location.pathname.replace('/trope/','').replace(/[^a-zA-Z0-9]/g,'_'));
+    const [trope] = useState(props.location.pathname.replace('/trope/','').replace(/[^a-zA-Z0-9]/g,'_'));
     const [tropeData, setTropeData] = useState([])
     const [tweetPanel, setTweetPanel] = useState(false);
     const [tweetPanelData, setTweetPanelData] = useState();
@@ -81,17 +63,17 @@ const SingleTrope = (props) => {
 
     function getTropeData(trope) {
       var trope2 = trope.replace(/_/g,' ');
-      if (trope2 == "David vs  Goliath")
+      if (trope2 === "David vs  Goliath")
         trope2 = "David vs. Goliath"
-      console.log(trope2)
-      var data = props.tropeList.find(x => x.trope == trope2);
-      console.log(data);
+      var data = props.tropeList.find(x => x.trope === trope2);
       return data;
     }
 
     function openTweetPanel(articleName,trope,link) {
         var articleName2 = articleName.replace(/[^a-zA-Z0-9]/g,'_');;
         var trope2 = trope.replace(/ /g,'_');
+        if (trope2 === "David_vs._Goliath")
+          trope2 = "David_vs__Goliath"
         var tweetIDs = props.articleList[articleName2][trope2]["id"];
         
         var tweets = [];
@@ -115,11 +97,13 @@ const SingleTrope = (props) => {
           <div className="title">
               <h2>{trope.replace(/_/g,' ').replace(trope[0],trope[0].toUpperCase())}</h2>
           </div>
-          <div style={{ marginTop: -15 }}>
+          <div style={{ marginTop: -15, marginLeft: 20 }}>
            <Link to='/tropes' className="returnToTropes" style={{ textDecoration: "none", color: "#ff8080", fontWeight: "bold", fontSize: 14 }}>Return to all tropes</Link>
           </div>
            {loading && 
+            <div style={{ marginLeft: 20 }}>
               <p>Loading tropes...</p>
+              </div>
             }  
             {!loading &&
               <div>
@@ -135,10 +119,11 @@ const SingleTrope = (props) => {
                             <img
                               className={classes.media}
                               src={v[3]}
+                              alt={v[1]}
                             />
                           }   
                              <CardContent className={classes.text}>
-                              <Typography gutterBottom variant="h5" component="h2" style={{ fontSize: 18 }}>
+                              <Typography gutterBottom variant="h5" component="h2" style={{ fontSize: 18, fontWeight: "bold" }}>
                                 {v[1]}
                               </Typography>
                               <Typography variant="body2" color="textSecondary" component="p" style={{ fontSize: 14 }} >

@@ -138,10 +138,6 @@ function App () {
             </li>
           </ul>
           <div className="content">
-            {/* <Route 
-              exact path="/"
-              render={() => <SearchBar tropeList={tropeList} linkList={linkList} articleList={articleList} tweetList={tweetList}></SearchBar>}
-            /> */}
             <Route 
               exact path="/"
               render={(props) => <Search {...props} tropeList={tropeList} linkList={linkList} articleList={articleList} tweetList={tweetList}></Search>}
