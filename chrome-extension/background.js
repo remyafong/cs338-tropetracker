@@ -22,7 +22,8 @@ chrome.runtime.onInstalled.addListener(function() {
       console.log("Sender is: ", sender)
       console.log("Sender.url is: ", sender.url)
       // chrome.tabs.update(sender.tab.id, {url: request.redirect});
-      chrome.tabs.create({'url': sender.url})
+      
+      chrome.tabs.create({'url': request.redirect})
       // chrome.tabs.create({'url': "chrome://newtab/"})
     });
     console.log("The color is blue.");

@@ -4,13 +4,17 @@
     "description": "Northwestern CS 338 Class Project",
     "permissions": ["activeTab", "declarativeContent", "storage", "tabs"],
     "background": {
-      "scripts": ["background.js"],
+      "scripts": [
+        "firebase-app.js",
+        "firebase-database.js",
+        "background.js"
+      ],
       "persistent": false
     },
     "chrome_url_overrides" : {
       "newtab": "hello.html" 
     },
-    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'" ,
+    "content_security_policy": "script-src 'self' 'unsafe-eval' https://cdn.firebase.com https://*.firebaseio.com; object-src 'self'",
     "page_action": {
       "default_popup": "popup.html",
       "default_title": "Trope Tracker",
