@@ -55,14 +55,14 @@ const Tropes = (props) => {
 				<div>
 	    			<div className="tropes">
 		    			{props.tropeList && props.tropeList.map((value, index) => (
-					        <ExpansionPanel>
+					        <ExpansionPanel key={index}>
 						        <ExpansionPanelSummary>
 						          <h4>{value.trope.replace(value.trope[0],value.trope[0].toUpperCase())}</h4>
 						        </ExpansionPanelSummary>
 						        <ExpansionPanelDetails>
 						          <div>
 						            {value.links.map((v,i) => (
-						            	<div className="entry">
+						            	<div className="entry" key={i}>
 						            		<div className="url">
 							            		<a href={v[0]} rel="noopener noreferrer" target="_blank">{v[1]}</a>
 							            		<p></p>
