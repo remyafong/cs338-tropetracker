@@ -114,7 +114,7 @@ const Tropes = (props) => {
 				<div>
 	    			<div className="tropes">
 		    			{props.tropeList && props.tropeList.map((value, index) => (
-					        <ExpansionPanel TransitionProps={{ unmountOnExit: true }}>
+					        <ExpansionPanel  key={index} TransitionProps={{ unmountOnExit: true }}>
 						        <ExpansionPanelSummary>
 						          <h4>{value.trope.replace(value.trope[0],value.trope[0].toUpperCase())}</h4>
 						        </ExpansionPanelSummary>
@@ -124,7 +124,7 @@ const Tropes = (props) => {
 						          		<p>No results found.</p>
 						          	}
 						            {value.numArticles > 0 && value.links.slice(0,3).map((v,i) => (
-						            	<div className="entry">
+						            	<div className="entry"  key={i}>
 							            	<Card className={classes.card}>
 							            	 <div className={classes.details}>
 							            	<a href={v[0]} rel="noopener noreferrer" target="_blank" style={{ textDecoration: "none" , color: "black"}}>

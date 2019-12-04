@@ -1,30 +1,28 @@
 import React, { useState, useEffect } from 'react';
-
 import Search from "./Components/Search/Search.js";
 import SearchResults from "./Components/SearchResults/SearchResults.js";
 import Tropes from "./Components/Tropes/Tropes.js";
-import SearchBar from "./Components/SearchBar/SearchBar.js"
 import SingleTrope from "./Components/SingleTrope/SingleTrope.js"
 
 import './App.css';
 
 import {
-  Route,
-  NavLink,
-  HashRouter
+	Route,
+	NavLink,
+	HashRouter
 } from "react-router-dom";
 
 import firebase from 'firebase/app';
 import 'firebase/database';
 const firebaseConfig = {
-  apiKey: "AIzaSyDJsNN9qdUAdwkQmL-8D91-m4frOKjzSHs",
-  authDomain: "trope-tracker-62549.firebaseapp.com",
-  databaseURL: "https://trope-tracker-62549.firebaseio.com",
-  projectId: "trope-tracker-62549",
-  storageBucket: "trope-tracker-62549.appspot.com",
-  messagingSenderId: "790085425651",
-  appId: "1:790085425651:web:8033e73a0115794231da86",
-  measurementId: "G-BCFM30M7FE"
+	apiKey: "AIzaSyDJsNN9qdUAdwkQmL-8D91-m4frOKjzSHs",
+	authDomain: "trope-tracker-62549.firebaseapp.com",
+	databaseURL: "https://trope-tracker-62549.firebaseio.com",
+	projectId: "trope-tracker-62549",
+	storageBucket: "trope-tracker-62549.appspot.com",
+	messagingSenderId: "790085425651",
+	appId: "1:790085425651:web:8033e73a0115794231da86",
+	measurementId: "G-BCFM30M7FE"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -165,5 +163,5 @@ function App () {
       </HashRouter>
     );
 }
-
-export default App;
+	
+export default App; 

@@ -108,7 +108,7 @@ const TropeSearchView = (props) => {
                               <Typography variant="body2" color="textSecondary" component="p" style={{ fontSize: 14 }} >
                                 {v[4]}
                               </Typography>
-                            </CardContent>
+                            </CardContent>  
                             </div>
                           </CardActionArea>
                          </a>
@@ -148,23 +148,22 @@ const TropeSearchView = (props) => {
                     <div className="tweetPanelHeader">
                     <h3>{tweetPanelData["trope"].replace(tweetPanelData["trope"][0],tweetPanelData["trope"][0].toUpperCase())}</h3>
                     <p></p>
-                    <a href={tweetPanelData["link"]} target="_blank">{tweetPanelData["articleName"]}</a>
+                    <a href={tweetPanelData["link"]} rel="noopener noreferrer" target="_blank">{tweetPanelData["articleName"]}</a>
                     </div>
                     <div className="tweetPanelContent">
                     <h4>Tweets</h4>
                     {tweetPanelData["tweets"].map((value, index) => (
-                        <div>
-                        <p className="tweetText">{value["text"]}</p>
-                        <a href={value["link"]} target="_blank" style={{ textDecoration: "none"}}>
-                            <Button 
-                                variant="outlined"
-                                style={{ textTransform: "none", fontSize: "10px", fontWeight: "bold" }} 
-                                    color="primary"
-                                >
-                                View tweet on Twitter
-                            </Button>
-                        </a>
-                        <p></p>
+                        <div key={value+index}>
+                            <p className="tweetText">{value["text"]}</p>
+                            <a href={value["link"]} rel="noopener noreferrer" target="_blank" style={{ textDecoration: "none"}}>
+                                <Button 
+                                    variant="outlined"
+                                    style={{ textTransform: "none", fontSize: "10px", fontWeight: "bold" }} 
+                                        color="primary"
+                                    >
+                                    View tweet on Twitter
+                                </Button>
+                            </a>
                         </div>
                     ))}
                     </div>
