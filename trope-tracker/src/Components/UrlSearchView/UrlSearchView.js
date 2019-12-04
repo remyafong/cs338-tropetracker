@@ -9,6 +9,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles({
   card: {
@@ -47,7 +48,6 @@ const useStyles = makeStyles({
 
 const UrlSearchView = (props) => {
     const classes = useStyles();
-    console.log(props.results)
     
     return (
         <div>
@@ -76,30 +76,37 @@ const UrlSearchView = (props) => {
                             </div>
                           </div>
                          </div>
-                        </Card>
-                   
+                        </Card>     
                     {props.tropes.map((value, index) => (
                         <ExpansionPanel key={index}>
                             <ExpansionPanelSummary>
                                 <h3 className="trope-name">{value.replace(value[0],value[0].toUpperCase())}</h3>
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>
-                                <div>
-                                    {props.tweets[index].map((v, i) => (
-                                        <div key={v+i}>
-                                            <div className="tweet">{v}</div>
-                                            <a href={`http://twitter.com/a/status/${props.tweetIds[index][i]}`} rel="noopener noreferrer" target="_blank" style={{ textDecoration: "none"}}>
-                                                <Button 
-                                                    variant="outlined"
-                                                    style={{ textTransform: "none", fontSize: "15px", fontWeight: "bold", marginLeft: 50 }} 
-                                                        color="primary"
-                                                    >
-                                                    View tweet on Twitter
-                                                </Button>
-                                            </a>
-                                        </div>
-                                    ))}
-                                </div>
+                            <div style={{ display: 'block'}} >
+                              <div style={{ marginTop: -10, marginBottom: 20 }}>
+                                 <Link to={`/trope/${value}`} target="_blank" className="goToSingleTrope" style={{ textDecoration: "none", color: "#ff8080", fontWeight: "bold", fontSize: 14 }}>View other articles classified as {value.replace(value[0],value[0].toUpperCase())}</Link>
+                              </div>
+                              <div>
+                                  <div>
+                                      {props.tweets[index].map((v, i) => (
+                                          <div key={v+i}>
+                                              <div className="tweet">{v}</div>
+                                              <a href={`http://twitter.com/a/status/${props.tweetIds[index][i]}`} rel="noopener noreferrer" target="_blank" style={{ textDecoration: "none"}}>
+                                                  <Button 
+                                                      variant="outlined"
+                                                      style={{ textTransform: "none", fontSize: "15px", fontWeight: "bold", marginLeft: 50 }} 
+                                                          color="primary"
+                                                      >
+                                                      View tweet on Twitter
+                                                  </Button>
+                                              </a>
+                                          </div>
+                                      ))}
+                                  </div>
+                                </div>                
+                            </div>
+
                             </ExpansionPanelDetails>
                         </ExpansionPanel>
                     ))}
