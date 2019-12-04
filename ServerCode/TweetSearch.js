@@ -1,4 +1,6 @@
 const Twitter = require('twitter');
+const axios = require('axios');
+const cheerio = require('cheerio');
 const Tropes = require('./TropeList');
 const MultiMap = require("collections/multi-map");
 const fs = require('fs');
@@ -67,7 +69,7 @@ const newsSiteQuerys = [
 const searchTwitterSiteTerm = (client, term, site = 'filter:links') => {
   params.q = site + ' ' + term.queries;
 
-  client.get('search/tweets', params, function(error, tweets, response) {
+  client.get('search/tweets', params, async function(error, tweets, response) {
     if (!error) {
       for (tweet of tweets.statuses) {
         for (url of tweet.entities.urls){
@@ -75,7 +77,7 @@ const searchTwitterSiteTerm = (client, term, site = 'filter:links') => {
 						const pageHTML = await axios.get(url.expanded_url);
 						const $ = cheerio.load(pageHTML.data);
 						const realURL = $('.TweetTextSize--jumbo .js-display-url').parent().attr('title');
-						
+
 						if (realURL) {
 							url.expanded_url = realURL;
 						}

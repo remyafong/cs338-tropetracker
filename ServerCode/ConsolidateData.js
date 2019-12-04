@@ -90,7 +90,7 @@ const removeDuplicates = (tropeData, linkData) => {
 			let ld2 = linkData[Object.keys(linkData)[j]];
 			if (ld1.articleTitle && ld1.articleTitle == ld2.articleTitle) {
 				for (trope in ld2) {
-					if (trope != 'articleTitle' && trope != 'value') {
+					if (['articleTitle', 'articleImg', 'value', 'articleDesc'].every((n) => n != trope)) {
 						if (ld1[trope]) {
 							ld1[trope].count += ld2[trope].count;
 							ld1[trope].id = ld2[trope].id.concat(ld1[trope].id);
@@ -124,10 +124,21 @@ const createTable = async (key, value, data) => {
       if (table[k] == undefined) {
         table[k] = {value: data[id][key]};
         try {
-          if (key == 'link') {
+          if (key == 'link' && !data[id].articleDesc) {
             const pageHTML = await axios.get(data[id][key]);
             const $ = cheerio.load(pageHTML.data);
             table[k]["articleTitle"] = $('head title').text();
+            data[id]["articleTitle"] = table[k]["articleTitle"];
+            $("head meta").each(function () {
+              if ($(this).prop('property') == 'og:image') {
+                table[k]["articleImg"] = $(this).prop('content');
+                data[id]["articleImg"] = table[k]["articleImg"];
+              }
+              if ($(this).prop('property') == 'og:description') {
+                table[k]["articleDesc"] = $(this).prop('content');
+                data[id]["articleDesc"] = table[k]["articleDesc"];
+              }
+            });
           }
         }
         catch (e) {
@@ -155,6 +166,7 @@ const id2link = async (data) => {
 const firebaseUpload = async (data) => {
 	let tropeData = await id2trope(data);
 	let linkData = await id2link(data);
+  await idRef.set(data);
 
 	removeDuplicates(tropeData, linkData);
 
@@ -164,7 +176,6 @@ const firebaseUpload = async (data) => {
 		if (linkData[link].articleTitle) articleData[linkData[link].articleTitle.replace(/[^a-zA-Z0-9]/g, '_')] = linkData[link];
 	}
 
-	await idRef.set(data);
 	await tropeRef.set(tropeData);
 	await linkRef.set(linkData);
 	await articleRef.set(articleData);
