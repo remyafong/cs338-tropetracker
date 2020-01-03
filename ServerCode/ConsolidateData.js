@@ -24,6 +24,8 @@ const tropeRef = ref.child('trope');
 const linkRef = ref.child('link');
 const articleRef = ref.child('article');
 
+const articleAttrs = ['articleTitle', 'articleImg', 'articleDesc'];
+
 const sortedObject = (obj) => {
 	const arr = [];
 
@@ -90,7 +92,7 @@ const removeDuplicates = (tropeData, linkData) => {
 			let ld2 = linkData[Object.keys(linkData)[j]];
 			if (ld1.articleTitle && ld1.articleTitle == ld2.articleTitle) {
 				for (trope in ld2) {
-					if (['articleTitle', 'articleImg', 'value', 'articleDesc'].every((n) => n != trope)) {
+					if (articleAttrs.concat('value').every((n) => n != trope)) {
 						if (ld1[trope]) {
 							ld1[trope].count += ld2[trope].count;
 							ld1[trope].id = ld2[trope].id.concat(ld1[trope].id);
@@ -141,9 +143,9 @@ const createTable = async (key, value, data) => {
             });
           }
 					else {
-						table[k]["articleDesc"] = data[id]["articleDesc"];
-						table[k]["articleImg"] = data[id]["articleImg"];
-						table[k]["articleTitle"] = data[id]["articleTitle"];
+						articleAttrs.forEach(attr => {
+							if (data[id][attr]) table[k][attr] = data[id][attr];
+						});
 					}
         }
         catch (e) {
